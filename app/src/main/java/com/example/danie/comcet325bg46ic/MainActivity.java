@@ -34,8 +34,13 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         loc.Name = "Kanto";
         loc.Location = "Japan";
         loc.Description = "One of the largest districts";
+        loc.Price = 10.99;
         sql.addLocation(loc);
+    }
 
+    public void OpenActivity(View v){
+        Intent intent = new Intent(this,AddLocation.class);
+        startActivity(intent);
     }
 
     public boolean onTouchEvent(MotionEvent event){

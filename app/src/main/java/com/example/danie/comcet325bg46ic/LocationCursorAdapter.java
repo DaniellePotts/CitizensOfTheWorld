@@ -9,11 +9,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-/**
- * Created by danie on 21/12/2016.
- */
 public class LocationCursorAdapter extends CursorAdapter {
     public static final String LOCATION_NAME = "name";
     public static final String LOCATION = "location";
@@ -30,7 +25,7 @@ public class LocationCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndex(LOCATION_NAME));
-        String location = cursor.getString(cursor.getColumnIndex(LOCATION));
+        String location = cursor.getString(cursor.getColumnIndex("price"));
 
         TextView nameTxt = (TextView)view.findViewById(R.id.locationText);
         TextView priceTxt = (TextView)view.findViewById(R.id.priceTxt);

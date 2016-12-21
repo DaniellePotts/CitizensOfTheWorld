@@ -16,6 +16,7 @@
         </intent-filter>
     </activity>
         <activity android:name=".LocationsList"></activity>
+        <activity android:name=".AddLocation"></activity>
     </application>
 
 </manifest>

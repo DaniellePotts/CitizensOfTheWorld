@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="31dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginTop="62dp" />
+
+    <EditText
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationText"
+        android:layout_below="@+id/locationName"
+        android:layout_alignRight="@+id/locationName"
+        android:layout_alignEnd="@+id/locationName" />
+
+    <EditText
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/descriptionText"
+        android:layout_below="@+id/locationText"
+        android:layout_alignRight="@+id/locationText"
+        android:layout_alignEnd="@+id/locationText" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take Photo"
+        android:id="@+id/takePic"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/descriptionText"
+        android:layout_alignEnd="@+id/descriptionText"
+        android:onClick="TakePicture"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/priceTxt"
+        android:layout_below="@+id/takePic"
+        android:layout_alignRight="@+id/takePic"
+        android:layout_alignEnd="@+id/takePic"
+        android:layout_marginTop="29dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Location"
+        android:id="@+id/addLocation"
+        android:layout_below="@+id/priceTxt"
+        android:layout_marginTop="59dp"
+        android:layout_alignRight="@+id/priceTxt"
+        android:layout_alignEnd="@+id/priceTxt" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgPreview"
+        android:layout_alignBottom="@+id/takePic"
+        android:layout_toLeftOf="@+id/priceTxt"
+        android:layout_toStartOf="@+id/priceTxt" />
+</RelativeLayout>
