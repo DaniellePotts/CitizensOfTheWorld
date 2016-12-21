@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class SQLDatabase extends SQLiteOpenHelper{
     private static final String TABLE_NAME = "locations";
-    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_LOCATION = "location";
     public static final String COLUMN_DESCRIPTION = "description";
@@ -26,7 +26,7 @@ public class SQLDatabase extends SQLiteOpenHelper{
     public static final String COLUMN_GEOLOCATION = "geolocation";
     public static final String COLUMN_PRICE = "price";
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE = "LocationsDatabase";
 
     public static final String [] COLUMNS = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_DESCRIPTION,COLUMN_IMAGE,COLUMN_GEOLOCATION,COLUMN_PRICE};
@@ -162,6 +162,7 @@ public class SQLDatabase extends SQLiteOpenHelper{
 
         return locations;
     }
+
     private String ParseGeoLocation(double [] geoLocation){
         if(geoLocation.length == 2) {
             return Double.toString(geoLocation[0]) + "," + Double.toString(geoLocation[1]);
