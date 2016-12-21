@@ -19,23 +19,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     GestureDetector detector;
     ImageView cover;
 
-    SQLDatabase sql;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         cover = (ImageView)findViewById(R.id.coverPhoto);
         detector = new GestureDetector(this,this);
-
-        sql = new SQLDatabase(this);
-
-        Location loc = new Location();
-        loc.Name = "Kanto";
-        loc.Location = "Japan";
-        loc.Description = "One of the largest districts";
-        loc.Price = 10.99;
-        sql.addLocation(loc);
     }
 
     public void OpenActivity(View v){

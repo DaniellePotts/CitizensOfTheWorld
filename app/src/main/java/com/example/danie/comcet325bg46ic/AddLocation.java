@@ -1,7 +1,10 @@
 package com.example.danie.comcet325bg46ic;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -10,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.io.File;
@@ -19,14 +24,19 @@ import java.io.OutputStream;
 /**
  * Created by danie on 21/12/2016.
  */
-public class AddLocation extends AppCompatActivity{
+public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener{
 
     EditText locationNameTxt;
     EditText locationTxt;
     EditText descriptionTxt;
-    Button takePic;
     EditText priceTxt;
     ImageView preview;
+
+    RadioButton rdoTakePic;
+    RadioButton rdoSelectPic;
+    int acitivityCode = 0;
+    RadioGroup rdoGroup;
+    Bitmap imageToSave = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_location);
@@ -36,13 +46,80 @@ public class AddLocation extends AppCompatActivity{
         descriptionTxt = (EditText)findViewById(R.id.descriptionText);
         priceTxt = (EditText)findViewById(R.id.priceTxt);
         preview = (ImageView)findViewById(R.id.imgPreview);
+
+        rdoGroup = (RadioGroup)findViewById(R.id.imageChoices);
+        rdoTakePic = (RadioButton)findViewById(R.id.TakePhoto);
+        rdoSelectPic = (RadioButton)findViewById(R.id.UploadImage);
+        rdoGroup.setOnCheckedChangeListener(this);
     }
 
-    public void TakePicture(View v){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(intent.resolveActivity(getPackageManager()) != null){
-            startActivityForResult(intent,2);
+    public void GetImage(View v){
+        Intent intent = null;
+
+        if(rdoTakePic.isChecked()){
+            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            acitivityCode = 2;
+        }else if(rdoSelectPic.isChecked()){
+            intent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            acitivityCode = 3;
         }
+
+        if(intent != null){
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivityForResult(intent,acitivityCode);
+            }
+        }
+    }
+
+    protected void onActivityResult(int requestCode,int resultCode, Intent data){
+        if(requestCode == 2){
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                imageToSave = (Bitmap)extras.get("data");
+                preview.setImageBitmap(imageToSave);
+            }
+        }
+        else if(requestCode == 3){
+            if(resultCode == RESULT_OK){
+                Uri selectedImage = data.getData();
+
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                imageToSave = BitmapFactory.decodeFile(filePath);
+                preview.setImageBitmap(imageToSave);
+            }
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+    }
+    public void AddLocation(View v){
+        Location locationToAdd = new Location();
+        String filePath = "";
+        if(imageToSave != null) {
+            //SaveLoadImages saveLoad = new SaveLoadImages();
+            filePath = SaveImage(imageToSave);
+        }
+        else{
+
+        }
+
+            locationToAdd.Name = locationNameTxt.getText().toString();
+            locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
+            locationToAdd.Description = descriptionTxt.getText().toString();
+
+            SQLDatabase sqlDb = new SQLDatabase(this);
+            sqlDb.addLocation(locationToAdd);
+            Toast.makeText(getApplicationContext(), "Location was added", Toast.LENGTH_LONG).show();
+
     }
 
     public String SaveImage(Bitmap b){
@@ -56,7 +133,8 @@ public class AddLocation extends AppCompatActivity{
             e.printStackTrace();
         }
 
-        File file = new File(dir,"image1.jpg");
+        String fileName = "image_{date}.jpg";
+        File file = new File(dir,fileName);
 
         try{
             output = new FileOutputStream(file);
@@ -71,16 +149,6 @@ public class AddLocation extends AppCompatActivity{
             Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
         }
 
-        return file.getName();
-    }
-
-    protected void onActivityResult(int requestCode,int resultCode, Intent data){
-        if(requestCode == 2){
-            if(resultCode == RESULT_OK){
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap)extras.get("data");
-                SaveImage(imageBitmap);
-            }
-        }
+        return fileName;
     }
 }

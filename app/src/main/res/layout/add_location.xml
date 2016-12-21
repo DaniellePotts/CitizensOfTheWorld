@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:nestedScrollingEnabled="true">
 
     <EditText
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:id="@+id/locationName"
+        android:layout_marginRight="34dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginTop="30dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="31dp"
-        android:layout_marginEnd="31dp"
-        android:layout_marginTop="62dp" />
+        android:layout_alignParentEnd="true" />
 
     <EditText
         android:layout_width="220dp"
@@ -36,10 +37,11 @@
         android:layout_height="wrap_content"
         android:text="Take Photo"
         android:id="@+id/takePic"
-        android:layout_centerVertical="true"
+        android:onClick="GetImage"
+        android:layout_below="@+id/descriptionText"
         android:layout_alignRight="@+id/descriptionText"
         android:layout_alignEnd="@+id/descriptionText"
-        android:onClick="TakePicture"/>
+        android:layout_marginTop="104dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -57,10 +59,10 @@
         android:layout_height="wrap_content"
         android:text="Add Location"
         android:id="@+id/addLocation"
-        android:layout_below="@+id/priceTxt"
-        android:layout_marginTop="59dp"
-        android:layout_alignRight="@+id/priceTxt"
-        android:layout_alignEnd="@+id/priceTxt" />
+        android:onClick="AddLocation"
+        android:layout_below="@+id/imgPreview"
+        android:layout_alignRight="@+id/imgPreview"
+        android:layout_alignEnd="@+id/imgPreview" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -69,4 +71,37 @@
         android:layout_alignBottom="@+id/takePic"
         android:layout_toLeftOf="@+id/priceTxt"
         android:layout_toStartOf="@+id/priceTxt" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/descriptionText"
+        android:id="@+id/imageChoices"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/imgPreview">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take Photo"
+            android:id="@+id/TakePhoto"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/UploadImage"
+            android:layout_alignRight="@+id/takePic"
+            android:layout_alignEnd="@+id/takePic"
+            android:layout_marginTop="61dp" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Image"
+            android:id="@+id/UploadImage"
+            android:checked="true"
+            android:layout_alignTop="@+id/imageChoices"
+            android:layout_alignRight="@+id/descriptionText"
+            android:layout_alignEnd="@+id/descriptionText" />
+    </RadioGroup>
+
+
 </RelativeLayout>

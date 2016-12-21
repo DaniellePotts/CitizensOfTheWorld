@@ -26,6 +26,7 @@ public class LocationCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndex(LOCATION_NAME));
         String location = cursor.getString(cursor.getColumnIndex("price"));
+        String imageFile = cursor.getString(cursor.getColumnIndex("image"));
 
         TextView nameTxt = (TextView)view.findViewById(R.id.locationText);
         TextView priceTxt = (TextView)view.findViewById(R.id.priceTxt);
