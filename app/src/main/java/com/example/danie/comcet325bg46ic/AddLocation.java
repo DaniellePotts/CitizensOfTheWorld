@@ -20,6 +20,9 @@ import com.example.danie.comcet325bg46ic.data.Location;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by danie on 21/12/2016.
@@ -47,6 +50,10 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
         priceTxt = (EditText)findViewById(R.id.priceTxt);
         preview = (ImageView)findViewById(R.id.imgPreview);
 
+        locationNameTxt.setText("hid");
+        locationTxt.setText("uihui");
+        descriptionTxt.setText("fhe");
+        priceTxt.setText("5.99");
         rdoGroup = (RadioGroup)findViewById(R.id.imageChoices);
         rdoTakePic = (RadioButton)findViewById(R.id.TakePhoto);
         rdoSelectPic = (RadioButton)findViewById(R.id.UploadImage);
@@ -104,18 +111,17 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
     public void AddLocation(View v){
         Location locationToAdd = new Location();
         String filePath = "";
-        if(imageToSave != null) {
-            //SaveLoadImages saveLoad = new SaveLoadImages();
-            filePath = SaveImage(imageToSave);
-        }
-        else{
 
+        if(imageToSave == null) {
+            imageToSave = BitmapFactory.decodeResource(getResources(), R.drawable.tokyo);
         }
+            filePath = SaveImage(imageToSave);
+
 
             locationToAdd.Name = locationNameTxt.getText().toString();
             locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
             locationToAdd.Description = descriptionTxt.getText().toString();
-
+            locationToAdd.FileName = filePath;
             SQLDatabase sqlDb = new SQLDatabase(this);
             sqlDb.addLocation(locationToAdd);
             Toast.makeText(getApplicationContext(), "Location was added", Toast.LENGTH_LONG).show();
@@ -133,7 +139,7 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
             e.printStackTrace();
         }
 
-        String fileName = "image_{date}.jpg";
+        String fileName = setFileName();
         File file = new File(dir,fileName);
 
         try{
@@ -150,5 +156,29 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
         }
 
         return fileName;
+    }
+
+    public String setFileName(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        System.out.println(dateFormat.format(date)); //2016/11/16 12:08:43
+
+        String stringDate = date.toString();
+        char [] charDate = stringDate.toCharArray();
+
+        for(int i=0;i<charDate.length;i++){
+            String s = Character.toString(charDate[i]);
+
+            if(s.equals("") || s.equals(" ")){
+                s = "_";
+            }
+
+            charDate[i] = s.charAt(0);
+        }
+        String result = "";
+        for(char c : charDate){
+            result += c;
+        }
+        return "image_" + result + ".jpg";
     }
 }

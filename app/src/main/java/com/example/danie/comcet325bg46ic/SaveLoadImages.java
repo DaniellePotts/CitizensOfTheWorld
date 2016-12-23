@@ -43,16 +43,21 @@ public class SaveLoadImages extends AppCompatActivity{
 
         return file.getName();
     }
-    public static Bitmap LoadImage(String filePath,String imageName){
-        Bitmap b = null;
+    public Bitmap LoadImage(String filePath){
         try{
-            File f = new File(filePath,imageName);
-             b = BitmapFactory.decodeStream(new FileInputStream(f));
-
-        }
-        catch(Exception e){
+            File f = new File(AppConfigs.INTERNAL_FILE_ROUTE, filePath);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        }catch(Exception e){
             e.printStackTrace();
+            return null;
         }
+    }
+
+    public Bitmap getDefaultIcon(){
+        Bitmap b = BitmapFactory.decodeResource(getResources(),R.drawable.pikachu);
+
         return b;
     }
+
 }
