@@ -1,4 +1,4 @@
-package com.example.danie.comcet325bg46ic;
+package com.example.danie.comcet325bg46ic.data;
 
 /**
  * Created by bg46ic on 06/12/2016.

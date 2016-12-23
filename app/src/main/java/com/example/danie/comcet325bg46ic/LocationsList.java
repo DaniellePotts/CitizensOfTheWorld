@@ -14,9 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
-import java.util.List;
+import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
 
 
 /**
