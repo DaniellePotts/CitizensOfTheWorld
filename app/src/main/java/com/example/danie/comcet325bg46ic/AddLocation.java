@@ -24,9 +24,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by danie on 21/12/2016.
- */
 public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
 
     EditText locationNameTxt;
@@ -107,7 +104,7 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
 
     public void AddLocation(View v) {
         if(locationTxt.getText().toString().equals("") || locationNameTxt.getText().toString().equals("")){
-            Toast.makeText(getApplicationContext(),"Location and/or Name is required.",Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(),"Location and/or Name is required.",Toast.LENGTH_LONG).show();
         }else {
         Location locationToAdd = new Location();
         String filePath = "";
@@ -118,6 +115,7 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
             locationToAdd.Name = locationNameTxt.getText().toString();
             locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
             locationToAdd.Description = descriptionTxt.getText().toString();
+            locationToAdd.Location = locationTxt.getText().toString();
             locationToAdd.FileName = filePath;
             SQLDatabase sqlDb = new SQLDatabase(this);
             sqlDb.addLocation(locationToAdd);

@@ -1,20 +1,12 @@
 package com.example.danie.comcet325bg46ic;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.example.danie.comcet325bg46ic.data.Location;
-
-import java.util.jar.Attributes;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
