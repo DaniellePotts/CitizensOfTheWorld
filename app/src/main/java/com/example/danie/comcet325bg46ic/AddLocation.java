@@ -144,8 +144,6 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
 
         try{
             output = new FileOutputStream(file);
-
-            //compress image
             b.compress(Bitmap.CompressFormat.JPEG, 50, output);
             output.flush();
             output.close();
@@ -159,12 +157,11 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
     }
 
     public String setFileName(){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-        System.out.println(dateFormat.format(date)); //2016/11/16 12:08:43
-
-        String stringDate = date.toString();
-        char [] charDate = stringDate.toCharArray();
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date currentDate = new Date();
+        df.format(currentDate);
+        String date = currentDate.toString();
+        char [] charDate = date.toCharArray();
 
         for(int i=0;i<charDate.length;i++){
             String s = Character.toString(charDate[i]);
