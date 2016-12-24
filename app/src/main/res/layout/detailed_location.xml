@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/descriptionText"
+        android:id="@+id/descriptionTxt"
         android:layout_below="@+id/priceTxt"
         android:layout_alignRight="@+id/priceTxt"
         android:layout_alignEnd="@+id/priceTxt" />
@@ -54,4 +54,12 @@
         android:layout_above="@+id/locationTxt"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_toRightOf="@+id/locationImage"
+        android:layout_toEndOf="@+id/locationImage"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

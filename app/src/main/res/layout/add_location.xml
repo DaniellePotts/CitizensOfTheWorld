@@ -102,6 +102,4 @@
             android:layout_alignRight="@+id/descriptionText"
             android:layout_alignEnd="@+id/descriptionText" />
     </RadioGroup>
-
-
 </RelativeLayout>

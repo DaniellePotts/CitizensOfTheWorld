@@ -83,15 +83,21 @@ public class SQLDatabase extends SQLiteOpenHelper{
         if(cursor != null && cursor.moveToFirst()){
             result = new Location();
             result.ID = Integer.parseInt(cursor.getString(0));
-            result.Name = cursor.getString(1);
-            result.Location = cursor.getString(2);
-            result.FileName = cursor.getString(3);
-            String [] geoCodes = cursor.getString(4).split(",");
+            result.Name = cursor.getString(1) != null ? cursor.getString(1) : "NO NAME";
+            result.Location = cursor.getString(2) != null ? cursor.getString(2) : "NO LOCATION";
+            result.Description = cursor.getString(3) != null ? cursor.getString(3) : "NO DESCRIPTION" ;
+            result.FileName = cursor.getString(4) != null ? cursor.getString(4) : "NO IMAGE";
+            result.Price = cursor.getDouble(5);
+            String geolocation = cursor.getString(5) != null ? cursor.getString(5) : "0";
 
-            result.GeoLocation[0] = Double.parseDouble(geoCodes[0]);
-            result.GeoLocation[1] = Double.parseDouble(geoCodes[1]);
+            if(!result.FileName.equals("NO IMAGE")) {
+                SaveLoadImages saveLoad = new SaveLoadImages();
+                result.Image = saveLoad.LoadImage(result.FileName);
+            }
 
-            result.Price = Double.parseDouble(cursor.getString(5));
+            if(!geolocation.equals("0")){
+                result.GeoLocation = ParseGeoLocation(geolocation);
+            }
         }
 
         return result;

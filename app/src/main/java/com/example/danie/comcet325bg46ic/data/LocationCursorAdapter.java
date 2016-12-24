@@ -37,7 +37,7 @@ public class LocationCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        String name = cursor.getString(cursor.getColumnIndex(LOCATION_NAME));
+        String name = cursor.getString(cursor.getColumnIndex("name"));
         String location = cursor.getString(cursor.getColumnIndex("price"));
         String imageFile = cursor.getString(cursor.getColumnIndex("image"));
         Bitmap b = null;

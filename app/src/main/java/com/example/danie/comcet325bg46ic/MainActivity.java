@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.danie.comcet325bg46ic.data.Location;
+
 import java.util.jar.Attributes;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
