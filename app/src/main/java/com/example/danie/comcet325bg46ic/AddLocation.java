@@ -27,7 +27,7 @@ import java.util.Date;
 /**
  * Created by danie on 21/12/2016.
  */
-public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener{
+public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
 
     EditText locationNameTxt;
     EditText locationTxt;
@@ -40,59 +40,55 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
     int acitivityCode = 0;
     RadioGroup rdoGroup;
     Bitmap imageToSave = null;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_location);
 
-        locationNameTxt = (EditText)findViewById(R.id.locationName);
-        locationTxt = (EditText)findViewById(R.id.locationText);
-        descriptionTxt = (EditText)findViewById(R.id.descriptionText);
-        priceTxt = (EditText)findViewById(R.id.priceTxt);
-        preview = (ImageView)findViewById(R.id.imgPreview);
+        locationNameTxt = (EditText) findViewById(R.id.locationName);
+        locationTxt = (EditText) findViewById(R.id.locationText);
+        descriptionTxt = (EditText) findViewById(R.id.descriptionText);
+        priceTxt = (EditText) findViewById(R.id.priceTxt);
+        preview = (ImageView) findViewById(R.id.imgPreview);
 
-        locationNameTxt.setText("hid");
-        locationTxt.setText("uihui");
-        descriptionTxt.setText("fhe");
-        priceTxt.setText("5.99");
-        rdoGroup = (RadioGroup)findViewById(R.id.imageChoices);
-        rdoTakePic = (RadioButton)findViewById(R.id.TakePhoto);
-        rdoSelectPic = (RadioButton)findViewById(R.id.UploadImage);
+        rdoGroup = (RadioGroup) findViewById(R.id.imageChoices);
+        rdoTakePic = (RadioButton) findViewById(R.id.TakePhoto);
+        rdoSelectPic = (RadioButton) findViewById(R.id.UploadImage);
         rdoGroup.setOnCheckedChangeListener(this);
     }
 
-    public void GetImage(View v){
+    public void GetImage(View v) {
         Intent intent = null;
 
-        if(rdoTakePic.isChecked()){
+        if (rdoTakePic.isChecked()) {
             intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             acitivityCode = 2;
-        }else if(rdoSelectPic.isChecked()){
+        } else if (rdoSelectPic.isChecked()) {
             intent = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             acitivityCode = 3;
         }
 
-        if(intent != null){
-            if(intent.resolveActivity(getPackageManager()) != null){
-                startActivityForResult(intent,acitivityCode);
+        if (intent != null) {
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(intent, acitivityCode);
             }
         }
     }
 
-    protected void onActivityResult(int requestCode,int resultCode, Intent data){
-        if(requestCode == 2){
-            if(resultCode == RESULT_OK){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
-                imageToSave = (Bitmap)extras.get("data");
+                imageToSave = (Bitmap) extras.get("data");
                 preview.setImageBitmap(imageToSave);
             }
-        }
-        else if(requestCode == 3){
-            if(resultCode == RESULT_OK){
+        } else if (requestCode == 3) {
+            if (resultCode == RESULT_OK) {
                 Uri selectedImage = data.getData();
 
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String filePath = cursor.getString(columnIndex);
@@ -108,16 +104,17 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
     public void onCheckedChanged(RadioGroup group, int checkedId) {
 
     }
-    public void AddLocation(View v){
+
+    public void AddLocation(View v) {
+        if(locationTxt.getText().toString().equals("") || locationNameTxt.getText().toString().equals("")){
+            Toast.makeText(getApplicationContext(),"Location and/or Name is required.",Toast.LENGTH_LONG);
+        }else {
         Location locationToAdd = new Location();
         String filePath = "";
-
-        if(imageToSave == null) {
-           // imageToSave = BitmapFactory.decodeResource(getResources(), R.drawable.tokyo);
+        if (imageToSave == null) {
+            // imageToSave = BitmapFactory.decodeResource(getResources(), R.drawable.tokyo);
         }
-            filePath = SaveImage(imageToSave);
-
-
+        filePath = SaveImage(imageToSave);
             locationToAdd.Name = locationNameTxt.getText().toString();
             locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
             locationToAdd.Description = descriptionTxt.getText().toString();
@@ -125,30 +122,30 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
             SQLDatabase sqlDb = new SQLDatabase(this);
             sqlDb.addLocation(locationToAdd);
             Toast.makeText(getApplicationContext(), "Location was added", Toast.LENGTH_LONG).show();
-
+        }
     }
 
-    public String SaveImage(Bitmap b){
+    public String SaveImage(Bitmap b) {
         OutputStream output;
         File filePath = getFilesDir();
         File dir = new File(filePath.getAbsolutePath() + "/CitizensoftheWorld");
 
-        try{
+        try {
             dir.mkdirs();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         String fileName = setFileName();
-        File file = new File(dir,fileName);
+        File file = new File(dir, fileName);
 
-        try{
+        try {
             output = new FileOutputStream(file);
             b.compress(Bitmap.CompressFormat.JPEG, 50, output);
             output.flush();
             output.close();
             Toast.makeText(this, "Done", Toast.LENGTH_LONG).show();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
         }
@@ -156,24 +153,24 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
         return fileName;
     }
 
-    public String setFileName(){
+    public String setFileName() {
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date currentDate = new Date();
         df.format(currentDate);
         String date = currentDate.toString();
-        char [] charDate = date.toCharArray();
+        char[] charDate = date.toCharArray();
 
-        for(int i=0;i<charDate.length;i++){
+        for (int i = 0; i < charDate.length; i++) {
             String s = Character.toString(charDate[i]);
 
-            if(s.equals("") || s.equals(" ")){
+            if (s.equals("") || s.equals(" ")) {
                 s = "_";
             }
 
             charDate[i] = s.charAt(0);
         }
         String result = "";
-        for(char c : charDate){
+        for (char c : charDate) {
             result += c;
         }
         return "image_" + result + ".jpg";

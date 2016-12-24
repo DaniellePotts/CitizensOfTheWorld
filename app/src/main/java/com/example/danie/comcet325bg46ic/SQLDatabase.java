@@ -148,14 +148,11 @@ public class SQLDatabase extends SQLiteOpenHelper{
 
         if(cursor != null && cursor.moveToFirst()){
             do{
-                location = new Location();
-                location.ID = Integer.parseInt(cursor.getString(0));
-                location.Name = cursor.getString(1);
-                location.Location = cursor.getString(2);
-                location.Description = cursor.getString(3);
-                location.FileName = cursor.getString(4);
-                location.GeoLocation = ParseGeoLocation(cursor.getString(5));
-                location.Price = Double.parseDouble(cursor.getString(6));
+                location.Name = cursor.getString(1) != null ? cursor.getString(1) : "NO NAME";
+                location.Location = cursor.getString(2) != null ? cursor.getString(2) : "NO LOCATION";
+                location.Description = cursor.getString(3) != null ? cursor.getString(3) : "NO DESCRIPTION" ;
+                location.FileName = cursor.getString(4) != null ? cursor.getString(4) : "NO IMAGE";
+                location.Price = cursor.getDouble(5);
 
                 locations.add(location);
 
