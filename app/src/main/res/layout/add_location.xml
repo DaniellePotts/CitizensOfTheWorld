@@ -21,7 +21,8 @@
         android:id="@+id/locationText"
         android:layout_below="@+id/locationName"
         android:layout_alignRight="@+id/locationName"
-        android:layout_alignEnd="@+id/locationName" />
+        android:layout_alignEnd="@+id/locationName"
+        />
 
     <EditText
         android:layout_width="220dp"
@@ -35,13 +36,14 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Take Photo"
-        android:id="@+id/takePic"
+        android:text="@string/selectedPhotoButton"
+        android:id="@+id/getImageBtn"
         android:onClick="GetImage"
         android:layout_below="@+id/descriptionText"
         android:layout_alignRight="@+id/descriptionText"
         android:layout_alignEnd="@+id/descriptionText"
-        android:layout_marginTop="104dp" />
+        android:layout_marginTop="150dp"
+        android:layout_marginRight="-20dp"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -49,28 +51,28 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/priceTxt"
-        android:layout_below="@+id/takePic"
-        android:layout_alignRight="@+id/takePic"
-        android:layout_alignEnd="@+id/takePic"
-        android:layout_marginTop="29dp" />
+        android:layout_above="@+id/addLocation"
+        android:layout_alignRight="@+id/getImageBtn"
+        android:layout_alignEnd="@+id/getImageBtn" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Location"
+        android:text="@string/addLocationButton"
         android:id="@+id/addLocation"
         android:onClick="AddLocation"
-        android:layout_below="@+id/imgPreview"
-        android:layout_alignRight="@+id/imgPreview"
-        android:layout_alignEnd="@+id/imgPreview" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/priceTxt"
+        android:layout_alignEnd="@+id/priceTxt"
+        android:layout_marginBottom="39dp" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/imgPreview"
-        android:layout_alignBottom="@+id/takePic"
+        android:layout_alignBottom="@+id/getImageBtn"
         android:layout_toLeftOf="@+id/priceTxt"
-        android:layout_toStartOf="@+id/priceTxt" />
+        android:layout_toStartOf="@+id/priceTxt"
+        android:layout_width="72dp"
+        android:layout_height="72dp"/>
 
     <RadioGroup
         android:layout_width="match_parent"
@@ -86,11 +88,13 @@
             android:layout_height="wrap_content"
             android:text="Take Photo"
             android:id="@+id/TakePhoto"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="right"
             android:layout_below="@+id/UploadImage"
             android:layout_alignRight="@+id/takePic"
             android:layout_alignEnd="@+id/takePic"
-            android:layout_marginTop="61dp" />
+            android:layout_marginTop="61dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"/>
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -100,6 +104,62 @@
             android:checked="true"
             android:layout_alignTop="@+id/imageChoices"
             android:layout_alignRight="@+id/descriptionText"
-            android:layout_alignEnd="@+id/descriptionText" />
+            android:layout_alignEnd="@+id/descriptionText"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"/>
     </RadioGroup>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setLocationButton"
+        android:id="@+id/setLocation"
+        android:layout_marginTop="309dp"
+        android:layout_marginLeft="20dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/locationName"
+        android:id="@+id/textView"
+        android:layout_alignTop="@+id/locationName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="14dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/location"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/locationName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="14dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/locationDescription"
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/descriptionText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="14dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/locationPrice"
+        android:id="@+id/textView4"
+        android:layout_alignBottom="@+id/priceTxt"
+        android:layout_toLeftOf="@+id/descriptionText"
+        android:layout_toStartOf="@+id/descriptionText"
+        android:layout_marginBottom="5dp"/>
 </RelativeLayout>

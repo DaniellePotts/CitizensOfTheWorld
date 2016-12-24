@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -30,6 +31,8 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
     EditText locationTxt;
     EditText descriptionTxt;
     EditText priceTxt;
+    Button getImage;
+
     ImageView preview;
 
     RadioButton rdoTakePic;
@@ -47,6 +50,7 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
         descriptionTxt = (EditText) findViewById(R.id.descriptionText);
         priceTxt = (EditText) findViewById(R.id.priceTxt);
         preview = (ImageView) findViewById(R.id.imgPreview);
+        getImage = (Button)findViewById(R.id.getImageBtn);
 
         rdoGroup = (RadioGroup) findViewById(R.id.imageChoices);
         rdoTakePic = (RadioButton) findViewById(R.id.TakePhoto);
@@ -99,7 +103,12 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-
+        if(checkedId == R.id.TakePhoto){
+            getImage.setText(R.string.takePhotoButton);
+        }
+        else if(checkedId == R.id.UploadImage){
+            getImage.setText(R.string.selectedPhotoButton);
+        }
     }
 
     public void AddLocation(View v) {
