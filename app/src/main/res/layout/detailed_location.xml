@@ -1,65 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
         android:id="@+id/nameTxt"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="84dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:layout_marginEnd="84dp"
-        android:layout_marginTop="31dp" />
+        android:layout_marginRight="84dp"
+        android:layout_marginTop="31dp"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
         android:id="@+id/locationTxt"
-        android:layout_below="@+id/nameTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/nameTxt"
-        android:layout_alignStart="@+id/nameTxt" />
+        android:layout_alignStart="@+id/nameTxt"
+        android:layout_below="@+id/nameTxt"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
         android:id="@+id/priceTxt"
-        android:layout_below="@+id/locationTxt"
-        android:layout_alignRight="@+id/locationTxt"
-        android:layout_alignEnd="@+id/locationTxt"
-        android:layout_marginTop="69dp" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignEnd="@+id/locationTxt"
+        android:layout_alignRight="@+id/locationTxt"
+        android:layout_below="@+id/locationTxt"
+        android:layout_marginTop="69dp"
         android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/descriptionTxt"
-        android:layout_below="@+id/priceTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/priceTxt"
         android:layout_alignRight="@+id/priceTxt"
-        android:layout_alignEnd="@+id/priceTxt" />
+        android:layout_below="@+id/priceTxt"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
+        android:id="@+id/locationImage"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:id="@+id/locationImage"
         android:layout_above="@+id/locationTxt"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <ScrollView
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView"
-        android:layout_toRightOf="@+id/locationImage"
-        android:layout_toEndOf="@+id/locationImage"
-        android:layout_alignParentBottom="true" />
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
+            app:fabSize="mini"
+            android:id="@+id/delete_button"
+            android:src="@drawable/ic_action_delete"
+            android:visibility="invisible"/>
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="20dp"
+            app:fabSize="mini"
+            android:id="@+id/edit_button"
+            android:src="@drawable/ic_action_edit"
+            android:visibility="visible"/>
+    </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>

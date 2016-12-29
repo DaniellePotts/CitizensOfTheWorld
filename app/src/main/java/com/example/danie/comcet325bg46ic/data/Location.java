@@ -18,7 +18,8 @@ public class Location {
 
     public Location(){
         GeoLocation = new double[2];
-        Deletable = true;
+        Deletable = false;
+        Price = 0.0;
     }
 
     public String toString(){

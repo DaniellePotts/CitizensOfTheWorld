@@ -86,7 +86,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Take Photo"
+            android:text="@string/radioBtnTakePic"
             android:id="@+id/TakePhoto"
             android:layout_gravity="right"
             android:layout_below="@+id/UploadImage"
@@ -99,7 +99,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Upload Image"
+            android:text="@string/radioBtnUpload"
             android:id="@+id/UploadImage"
             android:checked="true"
             android:layout_alignTop="@+id/imageChoices"

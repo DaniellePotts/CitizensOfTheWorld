@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">com.cet325.&lt;bg46ic></string>
 
-    <!--add Location view/activity strings-->
+    <!--add/edit Location view/activity strings-->
     <string name="addLocationButton">Add Location</string>
-    <string name="selectedPhotoButton">Select Photo</string>
+    <string name="selectedPhotoButton">Choose Image</string>
     <string name="takePhotoButton">Take Photo</string>
     <string name="locationName">Name:</string>
     <string name="location">Location:</string>
     <string name="locationDescription">Description:</string>
     <string name="locationPrice">Price:</string>
     <string name="setLocationButton">Set Location</string>
+    <string name="editPage">Edit Location</string>
+    <string name="radioBtnUpload">Upload Image</string>
+    <string name="radioBtnTakePic">Take Photo</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.danie.comcet325bg46ic;
 import android.content.Context;
 
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.app.LoaderManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,9 +19,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
@@ -44,19 +48,39 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Object val = parent.getAdapter().getItem(position);
-                LayoutInflater li = LayoutInflater.from(LocationsList.this);
+                final LayoutInflater li = LayoutInflater.from(LocationsList.this);
                 View getEmpIdView = li.inflate(R.layout.detailed_location,null);
                 Object obj = parent.getItemAtPosition(position);
-                SQLDatabase db = new SQLDatabase(c);
-                Location l = db.getLocation((int) parent.getItemIdAtPosition(position));
+                final SQLDatabase db = new SQLDatabase(c);
+                final Location l = db.GetLocation((int) parent.getItemIdAtPosition(position));
 
-                AlertDialog.Builder alertDiaglogBuilder = new AlertDialog.Builder(LocationsList.this);
+                final AlertDialog.Builder alertDiaglogBuilder = new AlertDialog.Builder(LocationsList.this);
                 alertDiaglogBuilder.setView(getEmpIdView);
 
                 final TextView name = (TextView)getEmpIdView.findViewById(R.id.nameTxt);
                 final TextView location = (TextView)getEmpIdView.findViewById(R.id.locationTxt);
                 final TextView description = (TextView)getEmpIdView.findViewById(R.id.descriptionTxt);
                 final TextView price = (TextView)getEmpIdView.findViewById(R.id.priceTxt);
+                final FloatingActionButton edit_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.edit_button);
+
+                if(l.Deletable) {
+                    FloatingActionButton delete_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.delete_button);
+                    delete_fab.setVisibility(View.VISIBLE);
+                    delete_fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            AlertDialog.Builder alertDelete = new AlertDialog.Builder(LocationsList.this);
+                            alertDelete.setMessage("Delete " + l.Name + "?");
+                            alertDelete.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    db.DeleteLocation(l);
+                                    finish();
+                                }
+                            }).create().show(); //TODO: set negative/cancel value :)
+                        }
+                    });
+                }
 
                 name.setText(l.Name);
                 location.setText(l.Location);
@@ -67,6 +91,37 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                     locationImage.setImageBitmap(l.Image);
                 }
 
+                edit_fab.setOnClickListener(new View.OnClickListener(){
+                    public void onClick(View v){
+                        View getEditView = li.inflate(R.layout.edit_location,null);
+                        final AlertDialog.Builder editLocationDialog = new AlertDialog.Builder(LocationsList.this);
+
+                        editLocationDialog.setView(getEditView);
+
+                        final EditText name = (EditText)getEditView.findViewById(R.id.nameTxt);
+                        final EditText location = (EditText)getEditView.findViewById(R.id.locationTxt);
+                        final EditText description = (EditText)getEditView.findViewById(R.id.descriptionTxt);
+                        final EditText price = (EditText)getEditView.findViewById(R.id.priceTxt);
+                        name.setText(l.Name);
+                        location.setText(l.Location);
+                        location.setText(l.Description);
+                        price.setText(Double.toString(l.Price));
+                        editLocationDialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                l.Name = name.getText().toString();
+                                l.Location = location.getText().toString();
+                                l.Description = description.getText().toString();
+                                l.Price = Double.parseDouble(price.getText().toString());
+
+                                db.UpdateLocation(l);
+                                Toast.makeText(c,"Location Updated.",Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        }).create().show();
+
+                    }
+                });
                 alertDiaglogBuilder.create().show();
 
                 return true;
