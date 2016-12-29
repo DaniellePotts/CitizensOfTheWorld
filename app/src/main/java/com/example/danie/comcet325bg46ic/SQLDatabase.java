@@ -23,8 +23,9 @@ public class SQLDatabase extends SQLiteOpenHelper{
     public static final String COLUMN_IMAGE = "image";
     public static final String COLUMN_GEOLOCATION = "geolocation";
     public static final String COLUMN_PRICE = "price";
+    public static final String COLUMN_DELETABLE = "deletable";
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 12;
     public static final String DATABASE = "LocationsDatabase";
 
     public static final String [] COLUMNS = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_DESCRIPTION,COLUMN_IMAGE,COLUMN_GEOLOCATION,COLUMN_PRICE};
@@ -40,7 +41,8 @@ public class SQLDatabase extends SQLiteOpenHelper{
                 COLUMN_DESCRIPTION + " TEXT,"+
                 COLUMN_IMAGE + " TEXT,"+
                 COLUMN_GEOLOCATION + " TEXT,"+
-                COLUMN_PRICE + " DOUBLE)";
+                COLUMN_PRICE + " DOUBLE," +
+                COLUMN_DELETABLE + " INTEGER)";
 
         db.execSQL(CREATE_DATABASE);
     }
@@ -65,6 +67,7 @@ public class SQLDatabase extends SQLiteOpenHelper{
         values.put(COLUMN_IMAGE,location.FileName);
         values.put(COLUMN_GEOLOCATION,geoLocation);
         values.put(COLUMN_PRICE,location.Price);
+        values.put(COLUMN_DELETABLE, location.Deletable ? 1 : 0);
 
         db.insert(TABLE_NAME, null, values);
         db.close();

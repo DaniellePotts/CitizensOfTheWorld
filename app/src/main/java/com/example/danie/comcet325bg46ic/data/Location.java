@@ -14,9 +14,11 @@ public class Location {
     public String FileName;
     public double [] GeoLocation;
     public double Price;
+    public boolean Deletable;
 
     public Location(){
         GeoLocation = new double[2];
+        Deletable = true;
     }
 
     public String toString(){
