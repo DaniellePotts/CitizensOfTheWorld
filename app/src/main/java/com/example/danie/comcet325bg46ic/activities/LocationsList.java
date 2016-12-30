@@ -1,4 +1,4 @@
-package com.example.danie.comcet325bg46ic;
+package com.example.danie.comcet325bg46ic.activities;
 
 import android.content.Context;
 
@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.danie.comcet325bg46ic.R;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;

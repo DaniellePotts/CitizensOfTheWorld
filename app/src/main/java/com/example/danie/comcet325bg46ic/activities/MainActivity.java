@@ -1,4 +1,4 @@
-package com.example.danie.comcet325bg46ic;
+package com.example.danie.comcet325bg46ic.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.example.danie.comcet325bg46ic.AddLocation;
+import com.example.danie.comcet325bg46ic.R;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
@@ -24,6 +27,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     public void OpenActivity(View v){
         Intent intent = new Intent(this,AddLocation.class);
         startActivity(intent);
+    }
+
+    public void OpenBudgetPlanner(View v){
+        Intent budgetPlanIntent = new Intent(this,BudgetPlanner.class);
+        startActivity(budgetPlanIntent);
     }
 
     public boolean onTouchEvent(MotionEvent event){
