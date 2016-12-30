@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
+import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,11 +26,15 @@ public class SQLDatabase extends SQLiteOpenHelper {
     public static final String COLUMN_GEOLOCATION = "geolocation";
     public static final String COLUMN_PRICE = "price";
     public static final String COLUMN_DELETABLE = "deletable";
+    public static final String COLUMN_PLANNED_VISIT = "planned_visit";
+    public static final String COLUMN_DATE_VISITED = "date_visited";
+    public static final String COLUMN_NOTES = "notes";
+    public static final String COLUMN_FAVOURITE = "favourite";
 
-    public static final int DATABASE_VERSION = 12;
+    public static final int DATABASE_VERSION = 16;
     public static final String DATABASE = "LocationsDatabase";
 
-    public static final String[] COLUMNS = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_GEOLOCATION, COLUMN_PRICE, COLUMN_DELETABLE};
+    public static final String[] COLUMNS = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_GEOLOCATION, COLUMN_PRICE, COLUMN_DELETABLE,COLUMN_PLANNED_VISIT,COLUMN_DATE_VISITED,COLUMN_NOTES,COLUMN_FAVOURITE};
 
     public SQLDatabase(Context context) {
         super(context, DATABASE, null, DATABASE_VERSION);
@@ -46,7 +51,11 @@ public class SQLDatabase extends SQLiteOpenHelper {
                 COLUMN_IMAGE + " TEXT," +
                 COLUMN_GEOLOCATION + " TEXT," +
                 COLUMN_PRICE + " DOUBLE," +
-                COLUMN_DELETABLE + " INTEGER)";
+                COLUMN_DELETABLE + " INTEGER," +
+                COLUMN_PLANNED_VISIT + " TEXT," +
+                COLUMN_DATE_VISITED + " TEXT," +
+                COLUMN_NOTES + " TEXT," +
+                COLUMN_FAVOURITE + " INTEGER)";
 
         db.execSQL(CREATE_DATABASE);
     }
@@ -72,6 +81,10 @@ public class SQLDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_GEOLOCATION, geoLocation);
         values.put(COLUMN_PRICE, location.Price);
         values.put(COLUMN_DELETABLE, location.Deletable ? 1 : 0);
+        values.put(COLUMN_PLANNED_VISIT, location.PlannedVisit.toString() != null ? location.PlannedVisit.toString() : "");
+        values.put(COLUMN_DATE_VISITED, location.DateVisited.toString() != null ? location.DateVisited.toString() : "");
+        values.put(COLUMN_NOTES, location.Notes);
+        values.put(COLUMN_FAVOURITE, location.Favorite ? 1 : 0);
 
         db.insert(TABLE_NAME, null, values);
         db.close();
@@ -97,6 +110,10 @@ public class SQLDatabase extends SQLiteOpenHelper {
             String geolocation = cursor.getString(5) != null ? cursor.getString(5) : "0";
             result.Price = cursor.getDouble(6);
             result.Deletable = Integer.parseInt(cursor.getString(7)) == 1 ? true : false;
+            result.PlannedVisit = Date.valueOf(cursor.getString(8));
+            result.DateVisited = Date.valueOf(cursor.getString(9));
+            result.Notes = cursor.getString(10);
+            result.Favorite = Integer.parseInt(cursor.getString(11)) == 1 ? true : false;
 
             if (!result.FileName.equals("NO IMAGE")) {
                 SaveLoadImages saveLoad = new SaveLoadImages();
