@@ -17,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.data.Location;
+import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 
 import java.io.File;
 import java.io.FileOutputStream;

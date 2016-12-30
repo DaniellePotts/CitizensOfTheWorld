@@ -1,4 +1,4 @@
-package com.example.danie.comcet325bg46ic;
+package com.example.danie.comcet325bg46ic.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.danie.comcet325bg46ic.data.Location;
+import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,9 +1,12 @@
-package com.example.danie.comcet325bg46ic;
+package com.example.danie.comcet325bg46ic.helpers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.example.danie.comcet325bg46ic.data.AppConfigs;
+import com.example.danie.comcet325bg46ic.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +58,7 @@ public class SaveLoadImages extends AppCompatActivity{
     }
 
     public Bitmap getDefaultIcon(){
-        Bitmap b = BitmapFactory.decodeResource(getResources(),R.drawable.pikachu);
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.pikachu);
 
         return b;
     }

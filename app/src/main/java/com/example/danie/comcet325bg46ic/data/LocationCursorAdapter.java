@@ -1,12 +1,9 @@
 package com.example.danie.comcet325bg46ic.data;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +11,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.danie.comcet325bg46ic.AppConfigs;
 import com.example.danie.comcet325bg46ic.R;
-import com.example.danie.comcet325bg46ic.SaveLoadImages;
-
-import java.io.File;
-import java.io.FileInputStream;
+import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
 public class LocationCursorAdapter extends CursorAdapter {
     public static final String LOCATION_NAME = "name";

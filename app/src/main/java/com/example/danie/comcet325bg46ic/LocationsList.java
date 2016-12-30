@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
+import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 
 
 /**
@@ -38,6 +40,8 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     CursorAdapter cursorAdapter;
     ListView lvItems;
     Context c = this;
+    Bitmap imageOverwrite;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.places_to_visit_activity);
@@ -102,10 +106,15 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                         final EditText location = (EditText)getEditView.findViewById(R.id.locationTxt);
                         final EditText description = (EditText)getEditView.findViewById(R.id.descriptionTxt);
                         final EditText price = (EditText)getEditView.findViewById(R.id.priceTxt);
+                        final ImageView image = (ImageView)getEditView.findViewById(R.id.locationImage);
                         name.setText(l.Name);
+
                         location.setText(l.Location);
                         location.setText(l.Description);
                         price.setText(Double.toString(l.Price));
+                        if(l.Image != null){
+                            image.setImageBitmap(l.Image);
+                        }
                         editLocationDialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
