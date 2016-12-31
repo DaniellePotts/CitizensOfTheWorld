@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by danie on 21/12/2016.
@@ -61,6 +64,29 @@ public class SaveLoadImages extends AppCompatActivity{
         Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.pikachu);
 
         return b;
+    }
+
+    public String setFileName() {
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date currentDate = new Date();
+        df.format(currentDate);
+        String date = currentDate.toString();
+        char[] charDate = date.toCharArray();
+
+        for (int i = 0; i < charDate.length; i++) {
+            String s = Character.toString(charDate[i]);
+
+            if (s.equals("") || s.equals(" ")) {
+                s = "_";
+            }
+
+            charDate[i] = s.charAt(0);
+        }
+        String result = "";
+        for (char c : charDate) {
+            result += c;
+        }
+        return "image_" + result + ".jpg";
     }
 
 }

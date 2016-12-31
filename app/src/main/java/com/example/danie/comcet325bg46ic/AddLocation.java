@@ -18,13 +18,11 @@ import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
+import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
 
@@ -144,7 +142,8 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
             e.printStackTrace();
         }
 
-        String fileName = setFileName();
+        SaveLoadImages saveLoadImages = new SaveLoadImages();
+        String fileName = saveLoadImages.setFileName();
         File file = new File(dir, fileName);
 
         try {
@@ -159,28 +158,5 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
         }
 
         return fileName;
-    }
-
-    public String setFileName() {
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date currentDate = new Date();
-        df.format(currentDate);
-        String date = currentDate.toString();
-        char[] charDate = date.toCharArray();
-
-        for (int i = 0; i < charDate.length; i++) {
-            String s = Character.toString(charDate[i]);
-
-            if (s.equals("") || s.equals(" ")) {
-                s = "_";
-            }
-
-            charDate[i] = s.charAt(0);
-        }
-        String result = "";
-        for (char c : charDate) {
-            result += c;
-        }
-        return "image_" + result + ".jpg";
     }
 }

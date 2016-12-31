@@ -20,7 +20,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="20dp"
             app:fabSize="mini"
-            android:id="@+id/delete_button"
+            android:id="@+id/add_location"
             android:src="@drawable/ic_action_add"
             android:visibility="visible"/>
     </android.support.design.widget.CoordinatorLayout>

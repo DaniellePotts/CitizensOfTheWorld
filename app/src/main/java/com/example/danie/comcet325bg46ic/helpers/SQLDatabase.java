@@ -169,10 +169,9 @@ public class SQLDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        Location location = null;
-
         if (cursor != null && cursor.moveToFirst()) {
             do {
+                Location location = new Location();
                 location.Name = cursor.getString(1) != null ? cursor.getString(1) : "NO NAME";
                 location.Location = cursor.getString(2) != null ? cursor.getString(2) : "NO LOCATION";
                 location.Description = cursor.getString(3) != null ? cursor.getString(3) : "NO DESCRIPTION";

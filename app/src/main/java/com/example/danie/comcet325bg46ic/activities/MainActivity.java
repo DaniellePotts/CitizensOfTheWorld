@@ -1,18 +1,25 @@
 package com.example.danie.comcet325bg46ic.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.AddLocation;
 import com.example.danie.comcet325bg46ic.R;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
+import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
@@ -76,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         MtFuji.GeoLocation[1] = 138.725589;
         MtFuji.Notes = "Here are some notes";
 
+        MtFuji.FileName = SaveImage(BitmapFactory.decodeResource(getResources(),R.drawable.mt_fuji));
+
         Location imperialPalace = new Location();
         imperialPalace.Name = "Imperial Palace";
         imperialPalace.Location = "Tokyo, Japan";
@@ -84,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         imperialPalace.GeoLocation[0] = 35.685175;
         imperialPalace.GeoLocation[1] = 139.7506108;
         imperialPalace.Notes = "here are some notes";
+
+        imperialPalace.FileName = SaveImage(BitmapFactory.decodeResource(getResources(),R.drawable.imperial_palace));
 
         Location museum = new Location();
         museum.Name = "National Museum of Nature and Science";
@@ -117,5 +128,35 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         return false;
+    }
+
+    public String SaveImage(Bitmap b) {
+        OutputStream output;
+        File filePath = getFilesDir();
+        File dir = new File(filePath.getAbsolutePath() + "/CitizensoftheWorld");
+
+        try {
+            dir.mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SaveLoadImages saveLoad = new SaveLoadImages();
+
+        String fileName = saveLoad.setFileName();
+        File file = new File(dir, fileName);
+
+        try {
+            output = new FileOutputStream(file);
+            b.compress(Bitmap.CompressFormat.JPEG, 50, output);
+            output.flush();
+            output.close();
+            Toast.makeText(this, "Done", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
+        }
+
+        return fileName;
     }
 }
