@@ -13,4 +13,16 @@
     <string name="editPage">Edit Location</string>
     <string name="radioBtnUpload">Upload Image</string>
     <string name="radioBtnTakePic">Take Photo</string>
+
+    <string-array name="listSorting">
+        <item>All</item>
+        <item>Favourite</item>
+        <item>Planned</item>
+        <item>Visited</item>
+    </string-array>
+
+    <string-array name="ascdsclist">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
 </resources>

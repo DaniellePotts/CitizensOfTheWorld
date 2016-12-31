@@ -33,6 +33,7 @@ public class LocationCursorAdapter extends CursorAdapter {
         String name = cursor.getString(cursor.getColumnIndex("name"));
         String location = cursor.getString(cursor.getColumnIndex("price"));
         String imageFile = cursor.getString(cursor.getColumnIndex("image"));
+
         Bitmap b = null;
         boolean imgFileExists = imageFile == null;
         if(imageFile != null){

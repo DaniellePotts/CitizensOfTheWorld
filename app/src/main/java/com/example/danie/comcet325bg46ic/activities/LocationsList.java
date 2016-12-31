@@ -23,6 +23,7 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,20 +36,24 @@ import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 /**
  * Created by danie on 18/12/2016.
  */
-public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> , AdapterView.OnItemSelectedListener{
 
     Uri uri;
     CursorAdapter cursorAdapter;
     ListView lvItems;
     Context c = this;
-    Bitmap imageOverwrite;
+    Bitmap imageOverwrite; //TODO: for updating image
 
+    Spinner sortList;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.places_to_visit_activity);
+        setContentView(R.layout.places_to_visit_activity
+        );
         cursorAdapter = new LocationCursorAdapter(this, null, 0);
         PopulateListView();
+        sortList = (Spinner)findViewById(R.id.sortList);
 
+        sortList.setOnItemSelectedListener(this);
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -139,6 +144,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         });
     }
 
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this, uri, null, null, null, null);
@@ -158,10 +164,39 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         SQLiteDatabase db;
         SQLDatabase helper = new SQLDatabase(this);
         db = helper.getWritableDatabase();
-        Cursor todo = db.rawQuery("SELECT * FROM locations", null);
-        Log.v("words", "hhio");
+        Cursor data = db.rawQuery("SELECT * FROM locations", null);
         lvItems = (ListView) findViewById(android.R.id.list);
-        LocationCursorAdapter adapter = new LocationCursorAdapter(this, todo);
+        LocationCursorAdapter adapter = new LocationCursorAdapter(this, data);
         lvItems.setAdapter(adapter);
+    }
+
+    private void PopulateListView(String orderBy) {
+        SQLiteDatabase db;
+        SQLDatabase helper = new SQLDatabase(this);
+        db = helper.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM locations WHERE " + orderBy.toUpperCase(), null);
+        lvItems = (ListView) findViewById(android.R.id.list);
+        LocationCursorAdapter adapter = new LocationCursorAdapter(this, data);
+        lvItems.setAdapter(adapter);
+    }
+
+
+    public void onItemSelected(AdapterView<?>parent, View view, int position, long id){
+       if(parent.getItemAtPosition(position).toString().equals("Favourite")){
+           PopulateListView("Favourite == 1");
+       }
+        else if (parent.getItemAtPosition(position).toString().equals("All")){
+           PopulateListView();
+       }
+        else if (parent.getItemAtPosition(position).toString().equals("Planned")){
+           PopulateListView("planned_visit is not null order by planned_visit");
+       }
+        else if(parent.getItemAtPosition(position).toString().equals("Visited")){
+           PopulateListView("date_visited is not null order by date_visited");
+       }
+    }
+
+    public void onNothingSelected(AdapterView<?>arg0){
+
     }
 }

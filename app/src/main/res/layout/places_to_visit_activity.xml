@@ -25,4 +25,23 @@
             android:visibility="visible"/>
     </android.support.design.widget.CoordinatorLayout>
 
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sortList"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="26dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginBottom="24dp"
+        android:entries="@array/listSorting"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ascDsc"
+        android:layout_alignBottom="@+id/sortList"
+        android:layout_centerHorizontal="true"
+        android:entries="@array/ascdsclist"/>
 </RelativeLayout>
