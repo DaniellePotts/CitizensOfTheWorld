@@ -119,7 +119,7 @@ public class AddLocation extends AppCompatActivity implements RadioGroup.OnCheck
         Location locationToAdd = new Location();
         String filePath = "";
         if (imageToSave == null) {
-            // imageToSave = BitmapFactory.decodeResource(getResources(), R.drawable.tokyo);
+            imageToSave = BitmapFactory.decodeResource(getResources(), R.drawable.default_icon);
         }
         filePath = SaveImage(imageToSave);
             locationToAdd.Name = locationNameTxt.getText().toString();

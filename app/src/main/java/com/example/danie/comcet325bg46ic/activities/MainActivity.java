@@ -59,6 +59,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     public void Populate(){
         SQLDatabase db = new SQLDatabase(this);
 
+        List<Location>locations = db.GetAll();
+
+        for(Location l: locations){
+            db.DeleteLocation(l);
+        }
+
+        //re-populate
+
         Location MtFuji = new Location();
         MtFuji.Favorite = true;
         MtFuji.Name = "Mount Fuji";
