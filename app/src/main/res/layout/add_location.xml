@@ -151,4 +151,14 @@
         android:layout_toLeftOf="@+id/descriptionText"
         android:layout_toStartOf="@+id/descriptionText"
         android:layout_marginBottom="5dp"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Planned Visit"
+        android:id="@+id/plannedVisit"
+        android:layout_alignTop="@+id/setLocation"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 </RelativeLayout>

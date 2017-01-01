@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.danie.comcet325bg46ic.data.Location;
 
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,6 +72,8 @@ public class SQLDatabase extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         String geoLocation = ParseGeoLocation(location.GeoLocation);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String plannedVisit = sdf.format(location.PlannedVisit);
 
         values.put(COLUMN_NAME, location.Name);
         values.put(COLUMN_LOCATION, location.Location);
@@ -79,10 +82,10 @@ public class SQLDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_GEOLOCATION, geoLocation);
         values.put(COLUMN_PRICE, location.Price);
         values.put(COLUMN_DELETABLE, location.Deletable ? 1 : 0);
-        values.put(COLUMN_PLANNED_VISIT, "" );
         values.put(COLUMN_DATE_VISITED, "");
         values.put(COLUMN_NOTES, location.Notes);
         values.put(COLUMN_FAVOURITE, location.Favorite ? 1 : 0);
+        values.put(COLUMN_PLANNED_VISIT, plannedVisit != null ? plannedVisit : "");
 
         db.insert(TABLE_NAME, null, values);
         db.close();

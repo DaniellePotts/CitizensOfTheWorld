@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,6 +30,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.R;
@@ -42,6 +44,7 @@ import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
 
 public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
 
@@ -68,103 +71,19 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         sortList.setOnItemSelectedListener(this);
         ascDescSort.setOnItemSelectedListener(this);
         final LayoutInflater li = LayoutInflater.from(LocationsList.this);
-        final FloatingActionButton addLocation = (FloatingActionButton)findViewById(R.id.add_location);
 
-        addLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder addLocationDialog = new AlertDialog.Builder(LocationsList.this);
-                View addLocationView = li.inflate(R.layout.add_location,null);
-                addLocationDialog.setView(addLocationView);
-                final EditText  locationNameTxt = (EditText) addLocationView.findViewById(R.id.locationName);
-                final EditText locationTxt = (EditText) addLocationView.findViewById(R.id.locationText);
-                final EditText descriptionTxt = (EditText) addLocationView.findViewById(R.id.descriptionText);;
-                final EditText priceTxt = (EditText) addLocationView.findViewById(R.id.priceTxt);;
-                image = (ImageView)addLocationView.findViewById(R.id.imgPreview);
-                get_image = (RadioGroup) addLocationView.findViewById(R.id.imageChoices);
-                takePhoto = (RadioButton) addLocationView.findViewById(R.id.TakePhoto);
-                selectPhoto = (RadioButton) addLocationView.findViewById(R.id.UploadImage);
-                final Button selectImage = (Button)addLocationView.findViewById(R.id.getImageBtn);
+        final SQLDatabase db = new SQLDatabase(this);
+        AddLocationUI();
 
-                selectImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = ImageGetIntent.SetImageIntent(takePhoto.isChecked(),selectPhoto.isChecked());
-                        if (intent != null) {
-                            if (intent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(intent, ImageGetIntent.ActivityCode);
-                            }
-                        }
-                        if (getParent() == null) {
-                            setResult(RESULT_OK, intent);
-
-                        } else {
-                            getParent().setResult(RESULT_OK, intent);
-                        }
-                    }
-                });
-
-                addLocationDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Location locationToAdd = new Location();
-                        locationToAdd.Deletable  = true;
-                        locationToAdd.Name = locationNameTxt.getText().toString();
-                        locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
-                        locationToAdd.Description = descriptionTxt.getText().toString();
-                        locationToAdd.Location = locationTxt.getText().toString();
-                        locationToAdd.FileName = SaveImage(imageOverwrite);
-                        SQLDatabase db = new SQLDatabase(c);
-                        db.addLocation(locationToAdd);
-                        Toast.makeText(getApplicationContext(),"Location was added.",Toast.LENGTH_LONG).show();
-                    }
-                }).create().show();
-            }
-        });
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 View getEmpIdView = li.inflate(R.layout.detailed_location, null);
-                final SQLDatabase db = new SQLDatabase(c);
                 final Location l = db.GetLocation((int) parent.getItemIdAtPosition(position));
-
-                final AlertDialog.Builder alertDiaglogBuilder = new AlertDialog.Builder(LocationsList.this);
-                alertDiaglogBuilder.setView(getEmpIdView);
-
-                final TextView name = (TextView) getEmpIdView.findViewById(R.id.nameTxt);
-                final TextView location = (TextView) getEmpIdView.findViewById(R.id.locationTxt);
-                final TextView description = (TextView) getEmpIdView.findViewById(R.id.descriptionTxt);
-                final TextView price = (TextView) getEmpIdView.findViewById(R.id.priceTxt);
                 final FloatingActionButton edit_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.edit_button);
                 final FloatingActionButton notes_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.notes);
 
-                if (l.Deletable) {
-                    FloatingActionButton delete_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.delete_button);
-                    delete_fab.setVisibility(View.VISIBLE);
-                    delete_fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            AlertDialog.Builder alertDelete = new AlertDialog.Builder(LocationsList.this);
-                            alertDelete.setMessage("Delete " + l.Name + "?");
-                            alertDelete.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    db.DeleteLocation(l);
-                                    finish();
-                                }
-                            }).create().show(); //TODO: set negative/cancel value :)
-                        }
-                    });
-                }
-
-                name.setText(l.Name);
-                location.setText(l.Location);
-                description.setText(l.Description);
-                price.setText(Double.toString(l.Price));
-                if (l.Image != null) {
-                    final ImageView locationImage = (ImageView) getEmpIdView.findViewById(R.id.locationImage);
-                    locationImage.setImageBitmap(l.Image);
-                }
+                DetailedView(l);
 
                 edit_fab.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -244,7 +163,6 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                         }).create().show();
                     }
                 });
-                alertDiaglogBuilder.create().show();
 
                 return true;
             }
@@ -359,5 +277,134 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 image.setImageBitmap(imageOverwrite);
             }
         }
+    }
+
+    public void AddLocationUI(){
+        final FloatingActionButton addLocation = (FloatingActionButton)findViewById(R.id.add_location);
+        final LayoutInflater li = LayoutInflater.from(LocationsList.this);
+        final Location locationToAdd = new Location();
+        addLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder addLocationDialog = new AlertDialog.Builder(LocationsList.this);
+                View addLocationView = li.inflate(R.layout.add_location,null);
+                addLocationDialog.setView(addLocationView);
+                final EditText  locationNameTxt = (EditText) addLocationView.findViewById(R.id.locationName);
+                final EditText locationTxt = (EditText) addLocationView.findViewById(R.id.locationText);
+                final EditText descriptionTxt = (EditText) addLocationView.findViewById(R.id.descriptionText);;
+                final EditText priceTxt = (EditText) addLocationView.findViewById(R.id.priceTxt);;
+                image = (ImageView)addLocationView.findViewById(R.id.imgPreview);
+                get_image = (RadioGroup) addLocationView.findViewById(R.id.imageChoices);
+                takePhoto = (RadioButton) addLocationView.findViewById(R.id.TakePhoto);
+                selectPhoto = (RadioButton) addLocationView.findViewById(R.id.UploadImage);
+                final Button selectImage = (Button)addLocationView.findViewById(R.id.getImageBtn);
+                final Button plannedVisit = (Button)addLocationView.findViewById(R.id.plannedVisit);
+
+                plannedVisit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder setDateDialog = new AlertDialog.Builder(LocationsList.this);
+                        View datetimeview = li.inflate(R.layout.time_date_picker,null);
+                        setDateDialog.setView(datetimeview);
+                        final DatePicker datePicker = (DatePicker)datetimeview.findViewById(R.id.datePicker);
+                        final TimePicker timePicker = (TimePicker)datetimeview.findViewById(R.id.timePicker);
+                        setDateDialog.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int day = datePicker.getDayOfMonth();
+                                int month = datePicker.getMonth();
+                                int year = datePicker.getYear();
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(year,month,day);
+                                calendar.set(Calendar.HOUR,timePicker.getCurrentHour());
+                                calendar.set(Calendar.MINUTE,timePicker.getCurrentMinute());
+
+                                locationToAdd.PlannedVisit = calendar.getTime();
+                            }
+                        }).create().show();
+                    }
+                });
+
+                selectImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = ImageGetIntent.SetImageIntent(takePhoto.isChecked(),selectPhoto.isChecked());
+                        if (intent != null) {
+                            if (intent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(intent, ImageGetIntent.ActivityCode);
+                            }
+                        }
+                        if (getParent() == null) {
+                            setResult(RESULT_OK, intent);
+
+                        } else {
+                            getParent().setResult(RESULT_OK, intent);
+                        }
+                    }
+                });
+
+                addLocationDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        locationToAdd.Deletable  = true;
+                        locationToAdd.Name = locationNameTxt.getText().toString();
+                        locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
+                        locationToAdd.Description = descriptionTxt.getText().toString();
+                        locationToAdd.Location = locationTxt.getText().toString();
+                        locationToAdd.FileName = SaveImage(imageOverwrite);
+                        if(imageOverwrite == null){
+                            locationToAdd.FileName = SaveImage(BitmapFactory.decodeResource(getResources(),R.drawable.default_icon));
+                        }
+                        SQLDatabase db = new SQLDatabase(c);
+                        db.addLocation(locationToAdd);
+                        Toast.makeText(getApplicationContext(),"Location was added.",Toast.LENGTH_LONG).show();
+                    }
+                }).create().show();
+            }
+        });
+    }
+    public void DetailedView(Location loc){
+        final Location l = loc;
+        final SQLDatabase db = new SQLDatabase(c);
+        final LayoutInflater li = LayoutInflater.from(LocationsList.this);
+        View getEmpIdView = li.inflate(R.layout.detailed_location, null);
+        final AlertDialog.Builder alertDiaglogBuilder = new AlertDialog.Builder(LocationsList.this);
+        alertDiaglogBuilder.setView(getEmpIdView);
+
+        final TextView name = (TextView) getEmpIdView.findViewById(R.id.nameTxt);
+        final TextView location = (TextView) getEmpIdView.findViewById(R.id.locationTxt);
+        final TextView description = (TextView) getEmpIdView.findViewById(R.id.descriptionTxt);
+        final TextView price = (TextView) getEmpIdView.findViewById(R.id.priceTxt);
+
+        if (l.Deletable) {
+            FloatingActionButton delete_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.delete_button);
+            delete_fab.setVisibility(View.VISIBLE);
+            delete_fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder alertDelete = new AlertDialog.Builder(LocationsList.this);
+                    alertDelete.setMessage("Delete " + l.Name + "?");
+                    alertDelete.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            db.DeleteLocation(l);
+                            finish();
+                        }
+                    }).create().show(); //TODO: set negative/cancel value :)
+                }
+            });
+        }
+
+        name.setText(l.Name);
+        location.setText(l.Location);
+        description.setText(l.Description);
+        price.setText(Double.toString(l.Price));
+        if (l.Image != null) {
+            final ImageView locationImage = (ImageView) getEmpIdView.findViewById(R.id.locationImage);
+            locationImage.setImageBitmap(l.Image);
+        }
+
+        alertDiaglogBuilder.create().show();
     }
 }

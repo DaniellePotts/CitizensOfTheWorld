@@ -89,4 +89,15 @@
             android:src="@drawable/ic_action_notes"
             android:visibility="visible"/>
     </android.support.design.widget.CoordinatorLayout>
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:numStars="1"
+        android:stepSize="1.0"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/descriptionTxt"
+        android:layout_alignEnd="@+id/descriptionTxt"
+        android:layout_marginBottom="101dp" />
 </RelativeLayout>

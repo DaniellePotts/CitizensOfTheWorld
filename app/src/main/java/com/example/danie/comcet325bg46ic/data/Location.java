@@ -30,6 +30,8 @@ public class Location {
         Deletable = false;
         Price = 0.0;
         Favorite = false;
+        PlannedVisit = new Date();
+        DateVisited = new Date();
     }
 
     public String toString(){
