@@ -22,6 +22,7 @@
     </string-array>
 
     <string-array name="ascdsclist">
+        <item>Order By Name...</item>
         <item>Ascending</item>
         <item>Descending</item>
     </string-array>

@@ -51,20 +51,10 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/priceTxt"
-        android:layout_above="@+id/addLocation"
-        android:layout_alignRight="@+id/getImageBtn"
-        android:layout_alignEnd="@+id/getImageBtn" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addLocationButton"
-        android:id="@+id/addLocation"
-        android:onClick="AddLocation"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/priceTxt"
-        android:layout_alignEnd="@+id/priceTxt"
-        android:layout_marginBottom="39dp" />
+        android:layout_below="@+id/setLocation"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="56dp" />
 
     <ImageView
         android:id="@+id/imgPreview"
@@ -115,9 +105,9 @@
         android:layout_height="wrap_content"
         android:text="@string/setLocationButton"
         android:id="@+id/setLocation"
-        android:layout_marginTop="309dp"
-        android:layout_marginLeft="20dp"
-        />
+        android:layout_below="@+id/getImageBtn"
+        android:layout_alignRight="@+id/getImageBtn"
+        android:layout_alignEnd="@+id/getImageBtn" />
 
     <TextView
         android:layout_width="wrap_content"

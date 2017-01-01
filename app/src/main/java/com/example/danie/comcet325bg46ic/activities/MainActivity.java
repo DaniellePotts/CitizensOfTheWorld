@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.danie.comcet325bg46ic.AddLocation;
 import com.example.danie.comcet325bg46ic.R;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
@@ -33,13 +32,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         setContentView(R.layout.activity_main);
         cover = (ImageView)findViewById(R.id.coverPhoto);
         detector = new GestureDetector(this,this);
-
         //Populate();
-    }
-
-    public void OpenActivity(View v){
-        Intent intent = new Intent(this,AddLocation.class);
-        startActivity(intent);
     }
 
     public void OpenBudgetPlanner(View v){

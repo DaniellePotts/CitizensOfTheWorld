@@ -8,9 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.danie.comcet325bg46ic.data.Location;
 
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -189,6 +186,13 @@ public class SQLDatabase extends SQLiteOpenHelper {
         cursor.close();
 
         return locations;
+    }
+
+    public Cursor OrderQuery(String query){
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        Cursor data = db.rawQuery(query,null);
+        return data;
     }
 
     private String ParseGeoLocation(double[] geoLocation) {

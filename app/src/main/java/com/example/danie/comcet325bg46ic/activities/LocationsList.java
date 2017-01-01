@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,7 +17,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,11 +25,14 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.R;
+import com.example.danie.comcet325bg46ic.data.DatabaseConfigData;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
 import com.example.danie.comcet325bg46ic.helpers.ImageGetIntent;
@@ -42,10 +43,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-
-/**
- * Created by danie on 18/12/2016.
- */
 public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
 
     Uri uri;
@@ -54,26 +51,80 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     Context c = this;
     Bitmap imageOverwrite; //TODO: for updating image
     Spinner sortList;
+    Spinner ascDescSort;
     ImageView image;
+    RadioGroup get_image;
+    RadioButton takePhoto;
+    RadioButton selectPhoto;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.places_to_visit_activity
         );
         cursorAdapter = new LocationCursorAdapter(this, null, 0);
-        PopulateListView();
+        PopulateListView(null);
         sortList = (Spinner) findViewById(R.id.sortList);
-
+        ascDescSort = (Spinner)findViewById(R.id.ascDsc);
+        sortList.setOnItemSelectedListener(this);
+        ascDescSort.setOnItemSelectedListener(this);
+        final LayoutInflater li = LayoutInflater.from(LocationsList.this);
         final FloatingActionButton addLocation = (FloatingActionButton)findViewById(R.id.add_location);
 
-        sortList.setOnItemSelectedListener(this);
+        addLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder addLocationDialog = new AlertDialog.Builder(LocationsList.this);
+                View addLocationView = li.inflate(R.layout.add_location,null);
+                addLocationDialog.setView(addLocationView);
+                final EditText  locationNameTxt = (EditText) addLocationView.findViewById(R.id.locationName);
+                final EditText locationTxt = (EditText) addLocationView.findViewById(R.id.locationText);
+                final EditText descriptionTxt = (EditText) addLocationView.findViewById(R.id.descriptionText);;
+                final EditText priceTxt = (EditText) addLocationView.findViewById(R.id.priceTxt);;
+                image = (ImageView)addLocationView.findViewById(R.id.imgPreview);
+                get_image = (RadioGroup) addLocationView.findViewById(R.id.imageChoices);
+                takePhoto = (RadioButton) addLocationView.findViewById(R.id.TakePhoto);
+                selectPhoto = (RadioButton) addLocationView.findViewById(R.id.UploadImage);
+                final Button selectImage = (Button)addLocationView.findViewById(R.id.getImageBtn);
+
+                selectImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = ImageGetIntent.SetImageIntent(takePhoto.isChecked(),selectPhoto.isChecked());
+                        if (intent != null) {
+                            if (intent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(intent, ImageGetIntent.ActivityCode);
+                            }
+                        }
+                        if (getParent() == null) {
+                            setResult(RESULT_OK, intent);
+
+                        } else {
+                            getParent().setResult(RESULT_OK, intent);
+                        }
+                    }
+                });
+
+                addLocationDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Location locationToAdd = new Location();
+                        locationToAdd.Deletable  = true;
+                        locationToAdd.Name = locationNameTxt.getText().toString();
+                        locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
+                        locationToAdd.Description = descriptionTxt.getText().toString();
+                        locationToAdd.Location = locationTxt.getText().toString();
+                        locationToAdd.FileName = SaveImage(imageOverwrite);
+                        SQLDatabase db = new SQLDatabase(c);
+                        db.addLocation(locationToAdd);
+                        Toast.makeText(getApplicationContext(),"Location was added.",Toast.LENGTH_LONG).show();
+                    }
+                }).create().show();
+            }
+        });
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Object val = parent.getAdapter().getItem(position);
-                final LayoutInflater li = LayoutInflater.from(LocationsList.this);
                 View getEmpIdView = li.inflate(R.layout.detailed_location, null);
-                Object obj = parent.getItemAtPosition(position);
                 final SQLDatabase db = new SQLDatabase(c);
                 final Location l = db.GetLocation((int) parent.getItemIdAtPosition(position));
 
@@ -128,11 +179,13 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                         final EditText price = (EditText) getEditView.findViewById(R.id.priceTxt);
                         image = (ImageView) getEditView.findViewById(R.id.locationImage);
                         final Button btnGetImage = (Button) getEditView.findViewById(R.id.btnGetImage);
-
+                        get_image = (RadioGroup)getEditView.findViewById(R.id.get_image);
+                        selectPhoto = (RadioButton)getEditView.findViewById(R.id.rdoUpload);
+                        takePhoto = (RadioButton)getEditView.findViewById(R.id.rdoTakePic);
                         btnGetImage.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                              Intent intent = ImageGetIntent.SetImageIntent(true,false);
+                              Intent intent = ImageGetIntent.SetImageIntent(takePhoto.isChecked(),selectPhoto.isChecked());
                                 if (intent != null) {
                                     if (intent.resolveActivity(getPackageManager()) != null) {
                                         startActivityForResult(intent, ImageGetIntent.ActivityCode);
@@ -213,36 +266,41 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         cursorAdapter.swapCursor(null);
     }
 
-    private void PopulateListView() {
-        SQLiteDatabase db;
-        SQLDatabase helper = new SQLDatabase(this);
-        db = helper.getWritableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM locations", null);
-        lvItems = (ListView) findViewById(android.R.id.list);
-        LocationCursorAdapter adapter = new LocationCursorAdapter(this, data);
-        lvItems.setAdapter(adapter);
-    }
-
     private void PopulateListView(String orderBy) {
-        SQLiteDatabase db;
+        String query = "SELECT * FROM " + DatabaseConfigData.TABLE_NAME;
+        if(orderBy != null){
+            query += " " + orderBy;
+        }
         SQLDatabase helper = new SQLDatabase(this);
-        db = helper.getWritableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM locations WHERE " + orderBy.toUpperCase(), null);
+        Cursor data = helper.OrderQuery(query.toUpperCase());
         lvItems = (ListView) findViewById(android.R.id.list);
         LocationCursorAdapter adapter = new LocationCursorAdapter(this, data);
         lvItems.setAdapter(adapter);
     }
-
 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getItemAtPosition(position).toString().equals("Favourite")) {
-            PopulateListView("Favourite == 1");
-        } else if (parent.getItemAtPosition(position).toString().equals("All")) {
-            PopulateListView();
-        } else if (parent.getItemAtPosition(position).toString().equals("Planned")) {
-            PopulateListView("planned_visit is not null order by planned_visit");
-        } else if (parent.getItemAtPosition(position).toString().equals("Visited")) {
-            PopulateListView("date_visited is not null order by date_visited");
+        Spinner s = (Spinner)parent;
+        if(parent.getId() == R.id.sortList) {
+            if (parent.getItemAtPosition(position).toString().equals("Favourite")) {
+                PopulateListView("WHERE Favourite == 1");
+            } else if (parent.getItemAtPosition(position).toString().equals("All")) {
+                PopulateListView(null);
+            } else if (parent.getItemAtPosition(position).toString().equals("Planned")) {
+                PopulateListView("WHERE planned_visit is not null order by planned_visit");
+            } else if (parent.getItemAtPosition(position).toString().equals("Visited")) {
+                PopulateListView("WHERE date_visited is not null order by date_visited");
+            }
+        }
+        else if(parent.getId() == R.id.ascDsc){
+            if(parent.getItemAtPosition(position).toString().equals("Ascending")){
+                PopulateListView("ORDER BY NAME ASC");
+            }
+            else if(parent.getItemAtPosition(position).toString().equals("Descending")){
+                PopulateListView("ORDER BY NAME DESC");
+            }
+            else if(parent.getItemAtPosition(position).toString().equals("Order By Name...")){
+                PopulateListView(null);
+            }
         }
     }
 
