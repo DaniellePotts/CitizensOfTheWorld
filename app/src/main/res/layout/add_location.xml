@@ -53,8 +53,7 @@
         android:id="@+id/priceTxt"
         android:layout_below="@+id/setLocation"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="56dp" />
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:id="@+id/imgPreview"
