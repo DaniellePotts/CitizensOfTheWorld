@@ -42,6 +42,9 @@
         android:id="@+id/favouriteLocation"
         android:numStars="1"
         android:stepSize="1"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
+        android:isIndicator="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

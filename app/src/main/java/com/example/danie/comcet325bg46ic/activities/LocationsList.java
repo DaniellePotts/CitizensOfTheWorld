@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -292,8 +293,8 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 addLocationDialog.setView(addLocationView);
                 final EditText  locationNameTxt = (EditText) addLocationView.findViewById(R.id.locationName);
                 final EditText locationTxt = (EditText) addLocationView.findViewById(R.id.locationText);
-                final EditText descriptionTxt = (EditText) addLocationView.findViewById(R.id.descriptionText);;
-                final EditText priceTxt = (EditText) addLocationView.findViewById(R.id.priceTxt);;
+                final EditText descriptionTxt = (EditText) addLocationView.findViewById(R.id.descriptionText);
+                final EditText priceTxt = (EditText) addLocationView.findViewById(R.id.priceTxt);
                 image = (ImageView)addLocationView.findViewById(R.id.imgPreview);
                 get_image = (RadioGroup) addLocationView.findViewById(R.id.imageChoices);
                 takePhoto = (RadioButton) addLocationView.findViewById(R.id.TakePhoto);
@@ -376,7 +377,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         final TextView location = (TextView) getEmpIdView.findViewById(R.id.locationTxt);
         final TextView description = (TextView) getEmpIdView.findViewById(R.id.descriptionTxt);
         final TextView price = (TextView) getEmpIdView.findViewById(R.id.priceTxt);
-
+        final RatingBar favourite = (RatingBar)getEmpIdView.findViewById(R.id.ratingBar);
         if (l.Deletable) {
             FloatingActionButton delete_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.delete_button);
             delete_fab.setVisibility(View.VISIBLE);
@@ -396,10 +397,20 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
             });
         }
 
+        favourite.setRating(l.Favorite ? 1 : 0);
         name.setText(l.Name);
         location.setText(l.Location);
         description.setText(l.Description);
         price.setText(Double.toString(l.Price));
+
+        favourite.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                l.Favorite = favourite.getRating() == 1? true: false;
+                Toast.makeText(getApplicationContext(), (favourite.getRating() == 1 ? "Favourited " : "Unfavourited ") + l.Name, Toast.LENGTH_LONG).show();
+                db.UpdateLocation(l);
+            }
+        });
         if (l.Image != null) {
             final ImageView locationImage = (ImageView) getEmpIdView.findViewById(R.id.locationImage);
             locationImage.setImageBitmap(l.Image);
