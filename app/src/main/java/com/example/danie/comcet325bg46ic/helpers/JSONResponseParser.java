@@ -25,7 +25,7 @@ public class JSONResponseParser {
                 conversionRates.GBP_Value = rates.getDouble("GBP");
             }
             if(!base.equals("USD")){
-                conversionRates.JPY_Value = rates.getDouble("USD");
+                conversionRates.USD_Value = rates.getDouble("USD");
             }
 
             return conversionRates;
