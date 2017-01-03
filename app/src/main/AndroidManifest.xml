@@ -17,7 +17,6 @@
         </intent-filter>
     </activity>
         <activity android:name=".activities.LocationsList"></activity>
-        <activity android:name=".AddLocation"></activity>
         <activity android:name=".activities.BudgetPlanner"></activity>
     </application>
 

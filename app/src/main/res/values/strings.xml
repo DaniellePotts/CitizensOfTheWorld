@@ -14,10 +14,23 @@
     <string name="radioBtnUpload">Upload Image</string>
     <string name="radioBtnTakePic">Take Photo</string>
 
+    <string-array name="listSorting">
+        <item>All</item>
+        <item>Favourite</item>
+        <item>Planned</item>
+        <item>Visited</item>
+        </string-array>
     <string-array name="currencyCodes">
         <item>EUR €</item>
         <item>USD $</item>
         <item>JPY ¥</item>
         <item>GBP £</item>
+    </string-array>
+    
+
+    <string-array name="ascdsclist">
+        <item>Order By Name...</item>
+        <item>Ascending</item>
+        <item>Descending</item>
     </string-array>
 </resources>
