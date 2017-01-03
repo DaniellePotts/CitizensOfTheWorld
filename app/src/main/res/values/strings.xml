@@ -13,4 +13,11 @@
     <string name="editPage">Edit Location</string>
     <string name="radioBtnUpload">Upload Image</string>
     <string name="radioBtnTakePic">Take Photo</string>
+
+    <string-array name="currencyCodes">
+        <item>EUR €</item>
+        <item>USD $</item>
+        <item>JPY ¥</item>
+        <item>GBP £</item>
+    </string-array>
 </resources>
