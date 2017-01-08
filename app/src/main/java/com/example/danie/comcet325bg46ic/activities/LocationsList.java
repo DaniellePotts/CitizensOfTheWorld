@@ -434,6 +434,34 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.sortByAsc:
+                PopulateListView("ORDER BY NAME ASC");
+                return true;
+            case R.id.sortByDesc:
+                PopulateListView("ORDER BY NAME DESC");
+                return true;
+            case R.id.sortByFavourite:
+                PopulateListView("WHERE Favourite == 1");
+                return true;
+            case R.id.sortByPlanned:
+                PopulateListView("WHERE planned_visit is not null order by planned_visit");
+                return true;
+            case R.id.sortByVisited:
+                PopulateListView("WHERE date_visited is not null order by date_visited");
+                return true;
+            case R.id.sortByDefault:
+                PopulateListView(null);
+                return true;
+            case R.id.jpy:
+                return true;
+            case R.id.usd:
+                return true;
+            case R.id.gbp:
+                return true;
+            case R.id.eur:
+                return true;
+        }
         return false;
     }
 }
