@@ -55,9 +55,8 @@
         android:layout_height="300dp"
         android:src="@drawable/default_icon"
         android:layout_above="@+id/priceTxt"
-        android:layout_toStartOf="@+id/nameTxt" />
-
-
+        android:layout_alignRight="@+id/plannedVisitLbl"
+        android:layout_alignEnd="@+id/plannedVisitLbl" />
 
     <RatingBar
         android:layout_width="wrap_content"
@@ -107,7 +106,7 @@
         android:layout_alignLeft="@+id/plannedCheck"
         android:layout_alignStart="@+id/plannedCheck" />
 
-    <!--<android.support.design.widget.CoordinatorLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -138,5 +137,5 @@
             android:id="@+id/notes"
             android:src="@drawable/ic_action_notes"
             android:visibility="visible"/>
-    </android.support.design.widget.CoordinatorLayout>-->
+    </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>
