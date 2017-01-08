@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -39,10 +40,13 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.R;
+import com.example.danie.comcet325bg46ic.data.CurrencyCodes;
 import com.example.danie.comcet325bg46ic.data.DatabaseConfigData;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
+import com.example.danie.comcet325bg46ic.helpers.GetCurrencyRates;
 import com.example.danie.comcet325bg46ic.helpers.ImageGetIntent;
+import com.example.danie.comcet325bg46ic.helpers.PopulateDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
@@ -50,6 +54,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.List;
 
 public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
 
@@ -73,7 +78,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         relativeLayout = (RelativeLayout)findViewById(R.id.locationList);
         registerForContextMenu(relativeLayout);
         cursorAdapter = new LocationCursorAdapter(this, null, 0);
-        PopulateListView(null);
+        PopulateListView(null,null);
         sortList = (Spinner) findViewById(R.id.sortList);
         ascDescSort = (Spinner)findViewById(R.id.ascDsc);
         sortList.setOnItemSelectedListener(this);
@@ -192,7 +197,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         cursorAdapter.swapCursor(null);
     }
 
-    private void PopulateListView(String orderBy) {
+    private void PopulateListView(String orderBy,CurrencyCodes code) {
         String query = "SELECT * FROM " + DatabaseConfigData.TABLE_NAME;
         if(orderBy != null){
             query += " " + orderBy;
@@ -200,7 +205,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         SQLDatabase helper = new SQLDatabase(this);
         Cursor data = helper.OrderQuery(query.toUpperCase());
         lvItems = (ListView) findViewById(android.R.id.list);
-        LocationCursorAdapter adapter = new LocationCursorAdapter(this, data);
+        LocationCursorAdapter adapter = new LocationCursorAdapter(this, data,code);
         lvItems.setAdapter(adapter);
     }
 
@@ -208,24 +213,24 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         Spinner s = (Spinner)parent;
         if(parent.getId() == R.id.sortList) {
             if (parent.getItemAtPosition(position).toString().equals("Favourite")) {
-                PopulateListView("WHERE Favourite == 1");
+                PopulateListView("WHERE Favourite == 1",null);
             } else if (parent.getItemAtPosition(position).toString().equals("All")) {
-                PopulateListView(null);
+                PopulateListView(null,null);
             } else if (parent.getItemAtPosition(position).toString().equals("Planned")) {
-                PopulateListView("WHERE planned_visit is not null order by planned_visit");
+                PopulateListView("WHERE planned_visit is not null order by planned_visit",null);
             } else if (parent.getItemAtPosition(position).toString().equals("Visited")) {
-                PopulateListView("WHERE date_visited is not null order by date_visited");
+                PopulateListView("WHERE date_visited is not null order by date_visited",null);
             }
         }
         else if(parent.getId() == R.id.ascDsc){
             if(parent.getItemAtPosition(position).toString().equals("Ascending")){
-                PopulateListView("ORDER BY NAME ASC");
+                PopulateListView("ORDER BY NAME ASC",null);
             }
             else if(parent.getItemAtPosition(position).toString().equals("Descending")){
-                PopulateListView("ORDER BY NAME DESC");
+                PopulateListView("ORDER BY NAME DESC",null);
             }
             else if(parent.getItemAtPosition(position).toString().equals("Order By Name...")){
-                PopulateListView(null);
+                PopulateListView(null,null);
             }
         }
     }
@@ -261,6 +266,10 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         }
 
         return fileName;
+    }
+
+    private void restartLoader() {
+        getLoaderManager().restartLoader(0,null,this);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -385,6 +394,11 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         final TextView description = (TextView) getEmpIdView.findViewById(R.id.descriptionTxt);
         final TextView price = (TextView) getEmpIdView.findViewById(R.id.priceTxt);
         final RatingBar favourite = (RatingBar)getEmpIdView.findViewById(R.id.ratingBar);
+        final TextView dateVisited = (TextView)getEmpIdView.findViewById(R.id.dateVisitedLbl);
+        final TextView plannedVisit = (TextView)getEmpIdView.findViewById(R.id.plannedVisitLbl);
+        final CheckBox plannedCheckBox = (CheckBox)getEmpIdView.findViewById(R.id.plannedCheck);
+        final CheckBox visitedCheckBox = (CheckBox)getEmpIdView.findViewById(R.id.visitedCheck);
+
         if (l.Deletable) {
             FloatingActionButton delete_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.delete_button);
             delete_fab.setVisibility(View.VISIBLE);
@@ -404,6 +418,10 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
             });
         }
 
+        plannedVisit.setText(l.PlannedVisit != null ? "Planned visit: " + l.PlannedVisit.toString():"");
+        dateVisited.setText(l.DateVisited != null ? "Date visited:" + l.DateVisited.toString():"");
+        plannedCheckBox.setChecked(l.PlannedVisit != null ? true: false);
+        visitedCheckBox.setChecked(l.DateVisited != null ? true : false);
         favourite.setRating(l.Favorite ? 1 : 0);
         name.setText(l.Name);
         location.setText(l.Location);
@@ -436,32 +454,60 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.sortByAsc:
-                PopulateListView("ORDER BY NAME ASC");
+                PopulateListView("ORDER BY NAME ASC",null);
                 return true;
             case R.id.sortByDesc:
-                PopulateListView("ORDER BY NAME DESC");
+                PopulateListView("ORDER BY NAME DESC",null);
                 return true;
             case R.id.sortByFavourite:
-                PopulateListView("WHERE Favourite == 1");
+                PopulateListView("WHERE Favourite == 1",null);
                 return true;
             case R.id.sortByPlanned:
-                PopulateListView("WHERE planned_visit is not null order by planned_visit");
+                PopulateListView("WHERE planned_visit is not null order by planned_visit",null);
                 return true;
             case R.id.sortByVisited:
-                PopulateListView("WHERE date_visited is not null order by date_visited");
+                PopulateListView("WHERE date_visited is not null order by date_visited",null);
                 return true;
             case R.id.sortByDefault:
-                PopulateListView(null);
+                PopulateListView(null,null);
                 return true;
             case R.id.jpy:
+                PopulateListView(null,CurrencyCodes.JPY);
                 return true;
             case R.id.usd:
+                PopulateListView(null,CurrencyCodes.USD);
                 return true;
             case R.id.gbp:
+                PopulateListView(null,CurrencyCodes.GBP);
                 return true;
             case R.id.eur:
+                PopulateListView(null,CurrencyCodes.EUR);
                 return true;
         }
         return false;
+    }
+
+    public void GetDate(final Location l){
+        AlertDialog.Builder setDateDialog = new AlertDialog.Builder(LocationsList.this);
+        final LayoutInflater li = LayoutInflater.from(LocationsList.this);
+
+        View datetimeview = li.inflate(R.layout.time_date_picker,null);
+        setDateDialog.setView(datetimeview);
+        final DatePicker datePicker = (DatePicker)datetimeview.findViewById(R.id.datePicker);
+        final TimePicker timePicker = (TimePicker)datetimeview.findViewById(R.id.timePicker);
+        setDateDialog.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int day = datePicker.getDayOfMonth();
+                int month = datePicker.getMonth();
+                int year = datePicker.getYear();
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year,month,day);
+                calendar.set(Calendar.HOUR,timePicker.getCurrentHour());
+                calendar.set(Calendar.MINUTE,timePicker.getCurrentMinute());
+
+                l.PlannedVisit = calendar.getTime();
+            }
+        }).create().show();
     }
 }
