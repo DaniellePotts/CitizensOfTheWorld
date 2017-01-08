@@ -40,16 +40,21 @@ public class LocationCursorAdapter extends CursorAdapter {
         String price = cursor.getString(cursor.getColumnIndex("price"));
         String imageFile = cursor.getString(cursor.getColumnIndex("image"));
         int favourite = cursor.getInt(cursor.getColumnIndex("favourite"));
+        String location = cursor.getString(cursor.getColumnIndex("location"));
+        String geoLocation = cursor.getString(cursor.getColumnIndex("geolocation"));
 
         Bitmap b = null;
         if(imageFile != null){
             b = saveLoad.LoadImage(imageFile);
         }
 
-        TextView nameTxt = (TextView)view.findViewById(R.id.locationText);
+        TextView nameTxt = (TextView)view.findViewById(R.id.locationNameTxt);
         TextView priceTxt = (TextView)view.findViewById(R.id.priceTxt);
+        TextView locationTxt = (TextView)view.findViewById(R.id.locationTxt);
+        TextView geoLocationTxt = (TextView)view.findViewById(R.id.lngLat);
         ImageView img = (ImageView) view.findViewById(R.id.locationImage);
         RatingBar ratingBar = (RatingBar)view.findViewById(R.id.favouriteLocation);
+
 
         /*if(code != null && Double.parseDouble(price) != 0.0){
             GetCurrencyRates getRates = new GetCurrencyRates();
@@ -65,8 +70,10 @@ public class LocationCursorAdapter extends CursorAdapter {
         else{
             img.setImageBitmap(b);
         }
+        locationTxt.setText(location);
         nameTxt.setText(name);
         priceTxt.setText(GetCurrencySymbol(code) + price);
+        geoLocationTxt.setText(geoLocation);
     }
 
     private String GetCurrencySymbol(CurrencyCodes code){

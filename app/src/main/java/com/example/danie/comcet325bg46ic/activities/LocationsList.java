@@ -416,6 +416,20 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         if (l.Image != null) {
             final ImageView locationImage = (ImageView) getEmpIdView.findViewById(R.id.locationImage);
             locationImage.setImageBitmap(l.Image);
+
+            locationImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final LayoutInflater li = LayoutInflater.from(LocationsList.this);
+                    View fullSizeImageView = li.inflate(R.layout.full_size_image, null);
+                    AlertDialog.Builder fullSizeImageDialog = new AlertDialog.Builder(c);
+                    fullSizeImageDialog.setView(fullSizeImageView);
+                    ImageView fullSizeImage = (ImageView)fullSizeImageView.findViewById(R.id.fullSizeImage);
+                    fullSizeImage.setImageBitmap(l.Image);
+
+                    fullSizeImageDialog.create().show();
+                }
+            });
         }
 
         alertDiaglogBuilder.create().show();
@@ -430,11 +444,17 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
-            case R.id.sortByAsc:
+            case R.id.sortByAscName:
                 PopulateListView("ORDER BY NAME ASC",null);
                 return true;
-            case R.id.sortByDesc:
+            case R.id.sortByAscLocation:
+                PopulateListView("ORDER BY LOCATION ASC",null);
+                return true;
+            case R.id.sortByDescName:
                 PopulateListView("ORDER BY NAME DESC",null);
+                return true;
+            case R.id.sortByDescLocation:
+                PopulateListView("ORDER BY LOCATION DESC",null);
                 return true;
             case R.id.sortByFavourite:
                 PopulateListView("WHERE favourite == 1",null);

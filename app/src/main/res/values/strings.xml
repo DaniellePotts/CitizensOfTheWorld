@@ -43,6 +43,8 @@
     <string name="sortDefault">All</string>
     <string name="sortAsc">Ascending</string>
     <string name="sortDesc">Descending</string>
+    <string name="sortAscDescName">By Name</string>
+    <string name="sortAscDescLocation">By Location</string>
 
     <!--currency items-->
     <string name="yen">JPY ¥</string>

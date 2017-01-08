@@ -51,11 +51,11 @@
 
     <ImageView
         android:id="@+id/locationImage"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_above="@+id/locationTxt"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/default_icon"
+        android:layout_above="@+id/priceTxt"
+        android:layout_toStartOf="@+id/nameTxt" />
 
 
 
@@ -107,7 +107,7 @@
         android:layout_alignLeft="@+id/plannedCheck"
         android:layout_alignStart="@+id/plannedCheck" />
 
-    <android.support.design.widget.CoordinatorLayout
+    <!--<android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -138,5 +138,5 @@
             android:id="@+id/notes"
             android:src="@drawable/ic_action_notes"
             android:visibility="visible"/>
-    </android.support.design.widget.CoordinatorLayout>
+    </android.support.design.widget.CoordinatorLayout>-->
 </RelativeLayout>

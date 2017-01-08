@@ -24,9 +24,23 @@
         android:title="@string/orderBy">
         <menu>
             <item android:id="@+id/sortByAsc"
-                android:title="@string/sortAsc"></item>
+                android:title="@string/sortAsc">
+                <menu>
+                    <item android:id="@+id/sortByAscName"
+                        android:title="@string/sortAscDescName"></item>
+                    <item android:id="@+id/sortByAscLocation"
+                        android:title="@string/sortAscDescLocation"></item>
+                </menu>
+            </item>
             <item android:id="@+id/sortByDesc"
-                android:title="@string/sortDesc"></item>
+                android:title="@string/sortDesc">
+                <menu>
+                    <item android:id="@+id/sortByDescName"
+                        android:title="@string/sortAscDescName"></item>
+                    <item android:id="@+id/sortByDescLocation"
+                        android:title="@string/sortAscDescLocation"></item>
+                </menu>
+            </item>
         </menu>
     </item>
     <item android:id="@+id/currency"
