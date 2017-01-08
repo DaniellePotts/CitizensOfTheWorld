@@ -57,6 +57,56 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:numStars="1"
+        android:stepSize="1.0"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/plannedCheck"
+        android:layout_toEndOf="@+id/plannedCheck" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/plannedVisitLbl"
+        android:layout_below="@+id/descriptionTxt"
+        android:layout_alignLeft="@+id/descriptionTxt"
+        android:layout_alignStart="@+id/descriptionTxt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/dateVisitedLbl"
+        android:layout_below="@+id/plannedVisitLbl"
+        android:layout_alignLeft="@+id/plannedVisitLbl"
+        android:layout_alignStart="@+id/plannedVisitLbl" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/plannedVisitLbl"
+        android:id="@+id/plannedCheck"
+        android:layout_below="@+id/dateVisitedLbl"
+        android:layout_alignLeft="@+id/dateVisitedLbl"
+        android:layout_alignStart="@+id/dateVisitedLbl" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dateVisitedLbl"
+        android:id="@+id/visitedCheck"
+        android:layout_below="@+id/plannedCheck"
+        android:layout_alignLeft="@+id/plannedCheck"
+        android:layout_alignStart="@+id/plannedCheck" />
+
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -89,15 +139,4 @@
             android:src="@drawable/ic_action_notes"
             android:visibility="visible"/>
     </android.support.design.widget.CoordinatorLayout>
-
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        android:numStars="1"
-        android:stepSize="1.0"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/descriptionTxt"
-        android:layout_alignEnd="@+id/descriptionTxt"
-        android:layout_marginBottom="101dp" />
 </RelativeLayout>

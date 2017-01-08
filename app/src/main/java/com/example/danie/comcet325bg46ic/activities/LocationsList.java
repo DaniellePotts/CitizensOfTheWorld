@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.app.LoaderManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -25,6 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,7 +34,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -44,9 +43,7 @@ import com.example.danie.comcet325bg46ic.data.CurrencyCodes;
 import com.example.danie.comcet325bg46ic.data.DatabaseConfigData;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
-import com.example.danie.comcet325bg46ic.helpers.GetCurrencyRates;
 import com.example.danie.comcet325bg46ic.helpers.ImageGetIntent;
-import com.example.danie.comcet325bg46ic.helpers.PopulateDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
@@ -54,22 +51,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
-import java.util.List;
 
-public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
+public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     Uri uri;
     CursorAdapter cursorAdapter;
     ListView lvItems;
     Context c = this;
     Bitmap imageOverwrite;
-    Spinner sortList;
-    Spinner ascDescSort;
     ImageView image;
     RadioGroup get_image;
     RadioButton takePhoto;
     RadioButton selectPhoto;
-
     RelativeLayout relativeLayout = null;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +72,6 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         registerForContextMenu(relativeLayout);
         cursorAdapter = new LocationCursorAdapter(this, null, 0);
         PopulateListView(null,null);
-        sortList = (Spinner) findViewById(R.id.sortList);
-        ascDescSort = (Spinner)findViewById(R.id.ascDsc);
-        sortList.setOnItemSelectedListener(this);
-        ascDescSort.setOnItemSelectedListener(this);
         final LayoutInflater li = LayoutInflater.from(LocationsList.this);
 
         final SQLDatabase db = new SQLDatabase(this);
@@ -209,36 +198,6 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         lvItems.setAdapter(adapter);
     }
 
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Spinner s = (Spinner)parent;
-        if(parent.getId() == R.id.sortList) {
-            if (parent.getItemAtPosition(position).toString().equals("Favourite")) {
-                PopulateListView("WHERE Favourite == 1",null);
-            } else if (parent.getItemAtPosition(position).toString().equals("All")) {
-                PopulateListView(null,null);
-            } else if (parent.getItemAtPosition(position).toString().equals("Planned")) {
-                PopulateListView("WHERE planned_visit is not null order by planned_visit",null);
-            } else if (parent.getItemAtPosition(position).toString().equals("Visited")) {
-                PopulateListView("WHERE date_visited is not null order by date_visited",null);
-            }
-        }
-        else if(parent.getId() == R.id.ascDsc){
-            if(parent.getItemAtPosition(position).toString().equals("Ascending")){
-                PopulateListView("ORDER BY NAME ASC",null);
-            }
-            else if(parent.getItemAtPosition(position).toString().equals("Descending")){
-                PopulateListView("ORDER BY NAME DESC",null);
-            }
-            else if(parent.getItemAtPosition(position).toString().equals("Order By Name...")){
-                PopulateListView(null,null);
-            }
-        }
-    }
-
-    public void onNothingSelected(AdapterView<?> arg0) {
-
-    }
-
     public String SaveImage(Bitmap b) {
         OutputStream output;
         File filePath = getFilesDir();
@@ -336,7 +295,6 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                                 calendar.set(year,month,day);
                                 calendar.set(Calendar.HOUR,timePicker.getCurrentHour());
                                 calendar.set(Calendar.MINUTE,timePicker.getCurrentMinute());
-
                                 locationToAdd.PlannedVisit = calendar.getTime();
                             }
                         }).create().show();
@@ -422,6 +380,25 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         dateVisited.setText(l.DateVisited != null ? "Date visited:" + l.DateVisited.toString():"");
         plannedCheckBox.setChecked(l.PlannedVisit != null ? true: false);
         visitedCheckBox.setChecked(l.DateVisited != null ? true : false);
+
+        visitedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(visitedCheckBox.isChecked()){
+                    GetDate(l,dateVisited,false,true);
+                }
+            }
+        });
+
+        plannedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(plannedCheckBox.isChecked()){
+                    GetDate(l,plannedVisit,true,false);
+                }
+            }
+        });
         favourite.setRating(l.Favorite ? 1 : 0);
         name.setText(l.Name);
         location.setText(l.Location);
@@ -460,7 +437,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 PopulateListView("ORDER BY NAME DESC",null);
                 return true;
             case R.id.sortByFavourite:
-                PopulateListView("WHERE Favourite == 1",null);
+                PopulateListView("WHERE favourite == 1",null);
                 return true;
             case R.id.sortByPlanned:
                 PopulateListView("WHERE planned_visit is not null order by planned_visit",null);
@@ -487,7 +464,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         return false;
     }
 
-    public void GetDate(final Location l){
+    public void GetDate(final Location l, final TextView textView, final boolean plannedVisit, final boolean dateVisited){
         AlertDialog.Builder setDateDialog = new AlertDialog.Builder(LocationsList.this);
         final LayoutInflater li = LayoutInflater.from(LocationsList.this);
 
@@ -506,7 +483,19 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 calendar.set(Calendar.HOUR,timePicker.getCurrentHour());
                 calendar.set(Calendar.MINUTE,timePicker.getCurrentMinute());
 
-                l.PlannedVisit = calendar.getTime();
+                if(plannedVisit) {
+                    l.PlannedVisit = calendar.getTime();
+                }
+                else if(dateVisited){
+                    l.DateVisited = calendar.getTime();
+                }
+
+                if (textView != null){
+                    textView.setText(dateVisited ? l.DateVisited.toString() : l.PlannedVisit.toString());
+                }
+
+                SQLDatabase db = new SQLDatabase(c);
+                db.UpdateLocation(l);
             }
         }).create().show();
     }

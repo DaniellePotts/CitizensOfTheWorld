@@ -18,6 +18,8 @@ public class Location {
     public double Price;
     public boolean Deletable;
 
+    public double ConvertedPrice;
+
     public String Notes;
 
     public Date PlannedVisit;
@@ -30,8 +32,8 @@ public class Location {
         Deletable = false;
         Price = 0.0;
         Favorite = false;
-        PlannedVisit = new Date();
-        DateVisited = new Date();
+        //PlannedVisit = new Date();
+        //DateVisited = new Date();
     }
 
     public String toString(){

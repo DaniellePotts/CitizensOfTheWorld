@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by danie on 21/12/2016.
@@ -59,34 +60,20 @@ public class SaveLoadImages extends AppCompatActivity{
             return null;
         }
     }
-
-    public Bitmap getDefaultIcon(){
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.pikachu);
-
-        return b;
-    }
-
     public String setFileName() {
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date currentDate = new Date();
-        df.format(currentDate);
-        String date = currentDate.toString();
-        char[] charDate = date.toCharArray();
-
-        for (int i = 0; i < charDate.length; i++) {
-            String s = Character.toString(charDate[i]);
-
-            if (s.equals("") || s.equals(" ")) {
-                s = "_";
-            }
-
-            charDate[i] = s.charAt(0);
-        }
-        String result = "";
-        for (char c : charDate) {
-            result += c;
-        }
-        return "image_" + result + ".jpg";
+        Random random = new Random();
+        double randomVal = random.nextDouble();
+        return "image_" + Double.toString(randomVal) + ".jpg";
     }
 
+    public void DeleteImage(String filePath){
+        File fdelete = new File(filePath);
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                System.out.println("file Deleted :" + filePath);
+            } else {
+                System.out.println("file not Deleted :" + filePath);
+            }
+        }
+    }
 }

@@ -8,7 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.danie.comcet325bg46ic.data.Location;
 
+import java.sql.Date;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,7 +76,10 @@ public class SQLDatabase extends SQLiteOpenHelper {
 
         String geoLocation = ParseGeoLocation(location.GeoLocation);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String plannedVisit = sdf.format(location.PlannedVisit);
+        String plannedVisit = null;
+        if(location.PlannedVisit != null) {
+            plannedVisit = sdf.format(location.PlannedVisit);
+        }
 
         values.put(COLUMN_NAME, location.Name);
         values.put(COLUMN_LOCATION, location.Location);
@@ -111,8 +117,15 @@ public class SQLDatabase extends SQLiteOpenHelper {
             String geolocation = cursor.getString(5) != null ? cursor.getString(5) : "0";
             result.Price = cursor.getDouble(6);
             result.Deletable = Integer.parseInt(cursor.getString(7)) == 1 ? true : false;
-            String PlannedVisit = cursor.getString(8);
-            String DateVisited = cursor.getString(9);
+            String PlannedVisit = cursor.getString(8) != null ? cursor.getString(8) : null;
+            String DateVisited = cursor.getString(9) != null ? cursor.getString(9) : null;
+
+            if(!PlannedVisit.equals(null) && !PlannedVisit.equals("")){
+
+            }
+            if(!DateVisited.equals(null) && !DateVisited.equals("")) {
+
+            }
             result.Notes = cursor.getString(10);
             result.Favorite = Integer.parseInt(cursor.getString(11)) == 1 ? true : false;
 
@@ -141,6 +154,10 @@ public class SQLDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_IMAGE, location.FileName);
         values.put(COLUMN_GEOLOCATION, geoLocation);
         values.put(COLUMN_PRICE, location.Price);
+        values.put(COLUMN_FAVOURITE,location.Favorite);
+        values.put(COLUMN_PLANNED_VISIT,location.PlannedVisit != null ? location.PlannedVisit.toString(): "");
+        values.put(COLUMN_DATE_VISITED,location.DateVisited != null ? location.DateVisited.toString(): "");
+        values.put(COLUMN_NOTES,location.Notes);
 
         int i = db.update(TABLE_NAME, //table
                 values, // column/value
@@ -159,6 +176,8 @@ public class SQLDatabase extends SQLiteOpenHelper {
                 COLUMN_ID + " = ?",
                 new String[]{String.valueOf(location.ID)});
 
+        SaveLoadImages loadImages = new SaveLoadImages();
+        loadImages.DeleteImage(location.FileName);
         db.close();
     }
 
@@ -172,6 +191,7 @@ public class SQLDatabase extends SQLiteOpenHelper {
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 Location location = new Location();
+                location.ID = cursor.getInt(0);
                 location.Name = cursor.getString(1) != null ? cursor.getString(1) : "NO NAME";
                 location.Location = cursor.getString(2) != null ? cursor.getString(2) : "NO LOCATION";
                 location.Description = cursor.getString(3) != null ? cursor.getString(3) : "NO DESCRIPTION";

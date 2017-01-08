@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import com.example.danie.comcet325bg46ic.R;
 import com.example.danie.comcet325bg46ic.data.Location;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,17 +16,9 @@ import java.util.List;
  */
 public class PopulateDatabase {
 
+    public List<Location> LoadInDefault10(Resources resources, Context c) {
 
-    public void LoadInDefault10(Resources resources, Context c){
-        SQLDatabase db = new SQLDatabase(c);
-
-        List<Location> locations = db.GetAll();
-
-        for(Location l: locations){
-            db.DeleteLocation(l);
-        }
-
-        //re-populate
+        DeleteCurrentData(c);
 
         Location MtFuji = new Location();
         MtFuji.Favorite = true;
@@ -34,7 +28,9 @@ public class PopulateDatabase {
         MtFuji.GeoLocation[0] = 35.3605555;
         MtFuji.GeoLocation[1] = 138.725589;
         MtFuji.Notes = "Here are some notes";
-        MtFuji.Image = BitmapFactory.decodeResource(resources,R.drawable.mt_fuji);
+        MtFuji.Price = 15953.91;
+        MtFuji.PlannedVisit = new Date();
+        MtFuji.Image = BitmapFactory.decodeResource(resources, R.drawable.mt_fuji);
 
         Location imperialPalace = new Location();
         imperialPalace.Name = "Imperial Palace";
@@ -44,6 +40,7 @@ public class PopulateDatabase {
         imperialPalace.GeoLocation[0] = 35.685175;
         imperialPalace.GeoLocation[1] = 139.7506108;
         imperialPalace.Notes = "here are some notes";
+        imperialPalace.Image = BitmapFactory.decodeResource(resources, R.drawable.imperial_palace);
 
         Location museum = new Location();
         museum.Name = "National Museum of Nature and Science";
@@ -51,10 +48,98 @@ public class PopulateDatabase {
         museum.Description = "Opened in 1871";
         museum.GeoLocation[0] = 35.716357;
         museum.GeoLocation[1] = 139.7741939;
+        museum.Price = 620;
         museum.Notes = "here are some notes";
+        museum.Image = BitmapFactory.decodeResource(resources, R.drawable.science_museum);
 
-        db.addLocation(MtFuji);
-        db.addLocation(museum);
-        db.addLocation(imperialPalace);
+        Location disneyLand = new Location();
+        disneyLand.Name = "Disneyland";
+        disneyLand.Location = "Tokyo, Japan";
+        disneyLand.Description = "Tokyo offshoot of the iconic theme park known for its rides, live shows & costumed characters";
+        disneyLand.GeoLocation[0] = 35.6328964;
+        disneyLand.GeoLocation[1] = 139.8782056;
+        disneyLand.Price = 7400;
+        disneyLand.Image = BitmapFactory.decodeResource(resources, R.drawable.disney_land);
+
+        Location skytree = new Location();
+        skytree.Name = "Skytree";
+        skytree.Location = "Tokyo, Japan";
+        skytree.Description = "World's tallest freestanding broadcasting tower with an observation deck boasting 360-degree views";
+        skytree.GeoLocation[0] = 35.7100627;
+        skytree.GeoLocation[1] = 139.8085117;
+        skytree.Price = 3000;
+        skytree.Image = BitmapFactory.decodeResource(resources, R.drawable.skytree);
+
+        Location tokyoTower = new Location();
+        tokyoTower.Name = "Tokyo Tower";
+        tokyoTower.Location = "Tokyo, Japan";
+        tokyoTower.Description = "Reminiscent of the Eiffel Tower, this landmark features observation areas & other attractions";
+        tokyoTower.GeoLocation[0] = 35.6585805;
+        tokyoTower.GeoLocation[1] = 139.7432442;
+        tokyoTower.Price = 900;
+        tokyoTower.Image = BitmapFactory.decodeResource(resources, R.drawable.tokyo_tower);
+
+        Location pokeCenter = new Location();
+        pokeCenter.Name = "Pokemon Center Mega Tokyo";
+        pokeCenter.Location = "Tokyo, Japan";
+        pokeCenter.Description = "Largest store dedicated exclusively to Pokemon in the world";
+        pokeCenter.GeoLocation[0] = 35.7287927;
+        pokeCenter.GeoLocation[1] = 139.7170338;
+        pokeCenter.Price = 0.0;
+        pokeCenter.Image = BitmapFactory.decodeResource(resources, R.drawable.poke_center);
+
+        Location onePieceTower = new Location();
+        onePieceTower.Name = "Tokyo One Piece Tower";
+        onePieceTower.Location = "Tokyo Tower, Japan";
+        onePieceTower.Description = "Discover the amazing world of One Piece at Tokyo's newest and most exciting amusement park located in the iconic Tokyo Tower";
+        onePieceTower.GeoLocation[0] = 35.658597;
+        onePieceTower.GeoLocation[1] = 139.743181;
+        onePieceTower.Price = 3000;
+        onePieceTower.Image = BitmapFactory.decodeResource(resources, R.drawable.onepiecetower);
+
+        Location tokyoNationalMuseum = new Location();
+        tokyoNationalMuseum.Name = "Tokyo National Museum";
+        tokyoNationalMuseum.Location = "Taito, Tokyo, Japan";
+        tokyoNationalMuseum.Description = "Stately museum complex devoted to the art & antiquities of Japan, as well as other Asian countries";
+        tokyoNationalMuseum.GeoLocation[0] = 35.7188351;
+        tokyoNationalMuseum.GeoLocation[1] = 139.7743328;
+        tokyoNationalMuseum.Price = 620;
+        tokyoNationalMuseum.Image = BitmapFactory.decodeResource(resources, R.drawable.national_museum);
+
+        Location koishikawaKorakuen = new Location();
+        koishikawaKorakuen.Name = "Koishikawa Korakuen Garden";
+        koishikawaKorakuen.Location = "Bunkyo, Tokyo, Japan";
+        koishikawaKorakuen.Description = "One of two surviving Edo period clan gardens in modern Tokyo";
+        koishikawaKorakuen.Price = 0.0;
+        koishikawaKorakuen.GeoLocation[0] = 35.7057504;
+        koishikawaKorakuen.GeoLocation[1] = 139.7482184;
+        koishikawaKorakuen.Image = BitmapFactory.decodeResource(resources, R.drawable.korakuen);
+
+
+        List<Location> locationList = new ArrayList<Location>();
+        locationList.add(MtFuji);
+        locationList.add(imperialPalace);
+        locationList.add(museum);
+        locationList.add(disneyLand);
+        locationList.add(skytree);
+        locationList.add(tokyoTower);
+        locationList.add(pokeCenter);
+        locationList.add(onePieceTower);
+        locationList.add(tokyoNationalMuseum);
+        locationList.add(koishikawaKorakuen);
+
+        return locationList;
+    }
+
+    public void DeleteCurrentData(Context c) {
+        SQLDatabase db = new SQLDatabase(c);
+        List<Location> locations = db.GetAll();
+        if (!locations.equals(null)) {
+            int recordSize = locations.size();
+            for (Location location : locations) {
+                db.DeleteLocation(location);
+            }
+        }
     }
 }
+
