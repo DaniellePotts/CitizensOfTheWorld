@@ -14,23 +14,43 @@
     <string name="radioBtnUpload">Upload Image</string>
     <string name="radioBtnTakePic">Take Photo</string>
 
+    <string name="dateVisitedLbl">Date Visited</string>
+    <string name="plannedVisitLbl">Planned Visit</string>
     <string-array name="listSorting">
         <item>All</item>
         <item>Favourite</item>
         <item>Planned</item>
         <item>Visited</item>
-        </string-array>
+    </string-array>
     <string-array name="currencyCodes">
         <item>EUR €</item>
         <item>USD $</item>
         <item>JPY ¥</item>
         <item>GBP £</item>
     </string-array>
-    
+
 
     <string-array name="ascdsclist">
         <item>Order By Name...</item>
         <item>Ascending</item>
         <item>Descending</item>
     </string-array>
+
+    <!--Menu values for sorting-->
+    <string name="sortFavourite">Favourite</string>
+    <string name="sortPlanned">Planned</string>
+    <string name="sortVisited">Visited</string>
+    <string name="sortDefault">All</string>
+    <string name="sortAsc">Ascending</string>
+    <string name="sortDesc">Descending</string>
+
+    <!--currency items-->
+    <string name="yen">JPY ¥</string>
+    <string name="usd">USD $</string>
+    <string name="gbp">GBP £</string>
+    <string name="eur">EUR €</string>
+    <!--main menu-->
+    <string name="sortFilter">Filter</string>
+    <string name="orderBy">Order</string>
+    <string name="currencySort">Alter Currency</string>
 </resources>

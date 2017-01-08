@@ -15,9 +15,12 @@ import android.os.Bundle;
 import android.app.LoaderManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -29,6 +32,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -53,7 +57,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     CursorAdapter cursorAdapter;
     ListView lvItems;
     Context c = this;
-    Bitmap imageOverwrite; //TODO: for updating image
+    Bitmap imageOverwrite;
     Spinner sortList;
     Spinner ascDescSort;
     ImageView image;
@@ -61,10 +65,13 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     RadioButton takePhoto;
     RadioButton selectPhoto;
 
+    RelativeLayout relativeLayout = null;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.places_to_visit_activity
-        );
+        setContentView(R.layout.places_to_visit_activity);
+        relativeLayout = (RelativeLayout)findViewById(R.id.locationList);
+        registerForContextMenu(relativeLayout);
         cursorAdapter = new LocationCursorAdapter(this, null, 0);
         PopulateListView(null);
         sortList = (Spinner) findViewById(R.id.sortList);
@@ -417,5 +424,16 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         }
 
         alertDiaglogBuilder.create().show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        return false;
     }
 }

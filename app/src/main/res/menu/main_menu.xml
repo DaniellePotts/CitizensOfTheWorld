@@ -1,4 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.LocationsList">
+
+    <item android:id="@+id/filter"
+        android:title="@string/sortFilter">
+        <menu>
+            <item
+                android:id="@+id/sortByDefault"
+                android:title="@string/sortDefault"></item>
+            <item
+                android:id="@+id/sortByFavourite"
+                android:title="@string/sortFavourite"></item>
+            <item
+                android:id="@+id/sortByPlanned"
+                android:title="@string/sortPlanned"></item>
+            <item
+                android:id="@+id/sortByVisited"
+                android:title="@string/sortVisited"></item>
+        </menu>
+    </item>
+    <item android:id="@+id/ordering"
+        android:title="@string/orderBy">
+        <menu>
+            <item android:id="@+id/sortByAsc"
+                android:title="@string/sortAsc"></item>
+            <item android:id="@+id/sortByDesc"
+                android:title="@string/sortDesc"></item>
+        </menu>
+    </item>
+    <item android:id="@+id/currency"
+        android:title="@string/currencySort">
+        <menu>
+            <item android:id="@+id/jpy"
+                android:title="@string/yen"></item>
+            <item android:id="@+id/usd"
+                android:title="@string/usd"></item>
+            <item  android:id="@+id/eur"
+                android:title="@string/eur"></item>
+            <item android:id="@+id/gbp"
+                android:title="@string/gbp"></item>
+        </menu>
+    </item>
 
 </menu>
