@@ -381,12 +381,28 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         plannedCheckBox.setChecked(l.PlannedVisit != null ? true: false);
         visitedCheckBox.setChecked(l.DateVisited != null ? true : false);
 
+        if(!plannedCheckBox.isChecked()){
+            visitedCheckBox.setEnabled(false);
+        }
         visitedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if(visitedCheckBox.isChecked()){
-                    GetDate(l,dateVisited,false,true);
+                    AlertDialog.Builder defaultDate = new AlertDialog.Builder(c);
+                    defaultDate.setPositiveButton("Set Default Date",new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Calendar calendar = Calendar.getInstance();
+                            l.DateVisited = calendar.getTime();
+                            dateVisited.setText(l.DateVisited.toString());
+                        }
+                    }).setNeutralButton("Set Custom Date", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            GetDate(l,dateVisited,false,true);
+                        }
+                    }).create().show();
                 }
             }
         });
@@ -396,6 +412,11 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(plannedCheckBox.isChecked()){
                     GetDate(l,plannedVisit,true,false);
+                    visitedCheckBox.setEnabled(true);
+                }
+                else if(!plannedCheckBox.isChecked()){
+                    visitedCheckBox.setEnabled(false);
+                    visitedCheckBox.setChecked(false);
                 }
             }
         });
@@ -426,7 +447,6 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                     fullSizeImageDialog.setView(fullSizeImageView);
                     ImageView fullSizeImage = (ImageView)fullSizeImageView.findViewById(R.id.fullSizeImage);
                     fullSizeImage.setImageBitmap(l.Image);
-
                     fullSizeImageDialog.create().show();
                 }
             });
