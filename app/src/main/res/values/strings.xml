@@ -13,6 +13,7 @@
     <string name="editPage">Edit Location</string>
     <string name="radioBtnUpload">Upload Image</string>
     <string name="radioBtnTakePic">Take Photo</string>
+    <string name="ranking">Ranking</string>
 
     <string name="dateVisitedLbl">Date Visited</string>
     <string name="plannedVisitLbl">Planned Visit</string>
