@@ -34,7 +34,7 @@ public class SQLDatabase extends SQLiteOpenHelper {
     public static final String COLUMN_FAVOURITE = "favourite";
     public static final String COLUMN_RANK = "rank";
 
-    public static final int DATABASE_VERSION = 17;
+    public static final int DATABASE_VERSION = 18;
     public static final String DATABASE = "LocationsDatabase";
 
     public static final String[] COLUMNS = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_GEOLOCATION, COLUMN_PRICE, COLUMN_DELETABLE, COLUMN_PLANNED_VISIT, COLUMN_DATE_VISITED, COLUMN_NOTES, COLUMN_FAVOURITE,COLUMN_RANK};

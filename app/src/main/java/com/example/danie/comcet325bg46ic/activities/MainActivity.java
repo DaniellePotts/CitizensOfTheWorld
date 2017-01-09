@@ -2,6 +2,7 @@ package com.example.danie.comcet325bg46ic.activities;
 
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,9 +33,13 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         setContentView(R.layout.activity_main);
 
-        detector = new GestureDetector(this,this);
+        detector = new GestureDetector(this, this);
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getBoolean("isfirstrun",true);
 
-       Populate();
+        if(isFirstRun){
+            Populate();
+        }
+
     }
 
     public void OpenBudgetPlanner(View v) {
@@ -59,12 +64,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     }
 
-    public void Populate(){
+    public void Populate() {
         PopulateDatabase pop = new PopulateDatabase();
-        List<Location>locations = pop.LoadInDefault10(getResources(),this);
+        List<Location> locations = pop.LoadInDefault10(getResources(), this);
         SQLDatabase db = new SQLDatabase(this);
-        for(Location l: locations){
-            if(l.Image != null){
+        for (Location l : locations) {
+            if (l.Image != null) {
                 l.FileName = SaveImage(l.Image);
                 db.addLocation(l);
             }
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         return false;
     }
+
     public String SaveImage(Bitmap b) {
         OutputStream output;
         File filePath = getFilesDir();

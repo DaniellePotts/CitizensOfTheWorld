@@ -13,6 +13,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.R;
 import com.example.danie.comcet325bg46ic.helpers.GetCurrencyRates;
@@ -23,21 +24,29 @@ public class LocationCursorAdapter extends CursorAdapter {
     public static final String LOCATION = "location";
 
     private CurrencyCodes code = null;
+    private CurrencyCodes defaultCurrencyCode = null;
     SaveLoadImages saveLoad = new SaveLoadImages();
     public LocationCursorAdapter(Context context, Cursor c, int flags){super(context,c,flags);}
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.places_to_visit_list,parent,false);
     }
-    public LocationCursorAdapter(Context context, Cursor c, CurrencyCodes code){
+    public LocationCursorAdapter(Context context, Cursor c, CurrencyCodes code,CurrencyCodes defaultCurrencyCode){
         super(context,c,0);
         this.code = code;
+        this.defaultCurrencyCode = defaultCurrencyCode;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndex("name"));
-        String price = cursor.getString(cursor.getColumnIndex("price"));
+        Currency curr = null;
+        if(code != null){
+            GetCurrencyRates getCurrencyRates = new GetCurrencyRates();
+            getCurrencyRates.Run(defaultCurrencyCode);
+            curr = getCurrencyRates.currency;
+        }
+        double price = curr != null && curr.ConvertCurrency(code) != 0.0 ? cursor.getDouble(cursor.getColumnIndex("price")) * curr.ConvertCurrency(code): cursor.getDouble(cursor.getColumnIndex("price"));
         String imageFile = cursor.getString(cursor.getColumnIndex("image"));
         int favourite = cursor.getInt(cursor.getColumnIndex("favourite"));
         String location = cursor.getString(cursor.getColumnIndex("location"));
@@ -57,16 +66,6 @@ public class LocationCursorAdapter extends CursorAdapter {
         RatingBar ratingBar = (RatingBar)view.findViewById(R.id.favouriteLocation);
         TextView rankTxt = (TextView)view.findViewById(R.id.rankTxt);
 
-
-        if(code != null && Double.parseDouble(price) != 0.0){
-            GetCurrencyRates getRates = new GetCurrencyRates();
-            getRates.Run(code);
-            if(getRates.currency != null){
-                double result = getRates.currency.ConvertCurrency(Double.parseDouble(price), code);
-                price = Double.toString(result);
-            }
-        }
-
         if (favourite == 1){
             ratingBar.setRating(1);
         }
@@ -76,7 +75,7 @@ public class LocationCursorAdapter extends CursorAdapter {
         rankTxt.setText("Rank: " + Integer.toString(rank));
         locationTxt.setText(location);
         nameTxt.setText(name);
-        priceTxt.setText(GetCurrencySymbol(code) + price);
+        priceTxt.setText(Double.toString(price));
         geoLocationTxt.setText(geoLocation);
     }
 

@@ -144,7 +144,6 @@ public class PopulateDatabase {
         SQLDatabase db = new SQLDatabase(c);
         List<Location> locations = db.GetAll();
         if (!locations.equals(null)) {
-            int recordSize = locations.size();
             for (Location location : locations) {
                 db.DeleteLocation(location);
             }
