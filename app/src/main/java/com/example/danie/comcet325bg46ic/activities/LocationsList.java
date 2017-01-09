@@ -50,7 +50,9 @@ import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -196,6 +198,8 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         lvItems = (ListView) findViewById(android.R.id.list);
         LocationCursorAdapter adapter = new LocationCursorAdapter(this, data,code);
         lvItems.setAdapter(adapter);
+        SwapCursor(adapter.getCursor());
+        adapter.notifyDataSetChanged();
     }
 
     public String SaveImage(Bitmap b) {
@@ -227,10 +231,6 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         return fileName;
     }
 
-    private void restartLoader() {
-        getLoaderManager().restartLoader(0,null,this);
-    }
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
@@ -253,6 +253,10 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 image.setImageBitmap(imageOverwrite);
             }
         }
+    }
+
+    public void SwapCursor(Cursor c){
+        cursorAdapter.swapCursor(c);
     }
 
     public void AddLocationUI(){
@@ -334,10 +338,15 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                         SQLDatabase db = new SQLDatabase(c);
                         db.addLocation(locationToAdd);
                         Toast.makeText(getApplicationContext(),"Location was added.",Toast.LENGTH_LONG).show();
+                        ReloadCursor(cursorAdapter.getCursor());
                     }
                 }).create().show();
             }
         });
+    }
+
+    public void ReloadCursor(Cursor c){
+        cursorAdapter.changeCursor(c);
     }
     public void DetailedView(Location loc){
         final Location l = loc;
@@ -470,11 +479,17 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
             case R.id.sortByAscLocation:
                 PopulateListView("ORDER BY LOCATION ASC",null);
                 return true;
+            case R.id.sortByAscRank:
+                PopulateListView("ORDER BY RANK ASC",null);
+                return true;
             case R.id.sortByDescName:
                 PopulateListView("ORDER BY NAME DESC",null);
                 return true;
             case R.id.sortByDescLocation:
                 PopulateListView("ORDER BY LOCATION DESC",null);
+                return true;
+            case R.id.sortByDescRank:
+                PopulateListView("ORDER BY RANK DESC",null);
                 return true;
             case R.id.sortByFavourite:
                 PopulateListView("WHERE favourite == 1",null);
@@ -498,7 +513,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 PopulateListView(null,CurrencyCodes.GBP);
                 return true;
             case R.id.eur:
-                PopulateListView(null,CurrencyCodes.EUR);
+                ReloadCursor(cursorAdapter.getCursor());
                 return true;
         }
         return false;

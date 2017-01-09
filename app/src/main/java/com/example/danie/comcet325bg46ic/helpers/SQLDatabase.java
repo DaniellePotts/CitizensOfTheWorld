@@ -32,15 +32,17 @@ public class SQLDatabase extends SQLiteOpenHelper {
     public static final String COLUMN_DATE_VISITED = "date_visited";
     public static final String COLUMN_NOTES = "notes";
     public static final String COLUMN_FAVOURITE = "favourite";
+    public static final String COLUMN_RANK = "rank";
 
-    public static final int DATABASE_VERSION = 16;
+    public static final int DATABASE_VERSION = 17;
     public static final String DATABASE = "LocationsDatabase";
 
-    public static final String[] COLUMNS = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_GEOLOCATION, COLUMN_PRICE, COLUMN_DELETABLE, COLUMN_PLANNED_VISIT, COLUMN_DATE_VISITED, COLUMN_NOTES, COLUMN_FAVOURITE};
+    public static final String[] COLUMNS = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_GEOLOCATION, COLUMN_PRICE, COLUMN_DELETABLE, COLUMN_PLANNED_VISIT, COLUMN_DATE_VISITED, COLUMN_NOTES, COLUMN_FAVOURITE,COLUMN_RANK};
 
     public SQLDatabase(Context context) {
         super(context, DATABASE, null, DATABASE_VERSION);
     }
+
 
     public void onCreate(SQLiteDatabase db) {
 
@@ -57,7 +59,8 @@ public class SQLDatabase extends SQLiteOpenHelper {
                 COLUMN_PLANNED_VISIT + " TEXT," +
                 COLUMN_DATE_VISITED + " TEXT," +
                 COLUMN_NOTES + " TEXT," +
-                COLUMN_FAVOURITE + " INTEGER)";
+                COLUMN_FAVOURITE + " INTEGER," +
+                COLUMN_RANK + " INTEGER)";
 
         db.execSQL(CREATE_DATABASE);
     }
@@ -92,6 +95,7 @@ public class SQLDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_NOTES, location.Notes);
         values.put(COLUMN_FAVOURITE, location.Favorite ? 1 : 0);
         values.put(COLUMN_PLANNED_VISIT, plannedVisit != null ? plannedVisit : "");
+        values.put(COLUMN_RANK,location.Rank);
 
         db.insert(TABLE_NAME, null, values);
         db.close();
@@ -119,6 +123,7 @@ public class SQLDatabase extends SQLiteOpenHelper {
             result.Deletable = Integer.parseInt(cursor.getString(7)) == 1 ? true : false;
             String PlannedVisit = cursor.getString(8) != null ? cursor.getString(8) : null;
             String DateVisited = cursor.getString(9) != null ? cursor.getString(9) : null;
+            result.Rank = cursor.getInt(10);
 
             if(!PlannedVisit.equals(null) && !PlannedVisit.equals("")){
 
@@ -158,6 +163,7 @@ public class SQLDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_PLANNED_VISIT,location.PlannedVisit != null ? location.PlannedVisit.toString(): "");
         values.put(COLUMN_DATE_VISITED,location.DateVisited != null ? location.DateVisited.toString(): "");
         values.put(COLUMN_NOTES,location.Notes);
+        values.put(COLUMN_RANK,location.Rank);
 
         int i = db.update(TABLE_NAME, //table
                 values, // column/value
@@ -197,9 +203,8 @@ public class SQLDatabase extends SQLiteOpenHelper {
                 location.Description = cursor.getString(3) != null ? cursor.getString(3) : "NO DESCRIPTION";
                 location.FileName = cursor.getString(4) != null ? cursor.getString(4) : "NO IMAGE";
                 location.Price = cursor.getDouble(5);
-                int deleteBool = cursor.getInt(7);
-
-                location.Deletable = deleteBool == 1 ? true : false;
+                location.Deletable = cursor.getInt(7) == 1 ? true: false;
+                location.Rank = cursor.getInt(10);
 
                 locations.add(location);
 

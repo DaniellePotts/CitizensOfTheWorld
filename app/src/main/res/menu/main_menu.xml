@@ -30,6 +30,8 @@
                         android:title="@string/sortAscDescName"></item>
                     <item android:id="@+id/sortByAscLocation"
                         android:title="@string/sortAscDescLocation"></item>
+                    <item android:id="@+id/sortByAscRank"
+                        android:title="@string/sortAscDescRank"></item>
                 </menu>
             </item>
             <item android:id="@+id/sortByDesc"
@@ -39,6 +41,8 @@
                         android:title="@string/sortAscDescName"></item>
                     <item android:id="@+id/sortByDescLocation"
                         android:title="@string/sortAscDescLocation"></item>
+                    <item android:id="@+id/sortByDescRank"
+                        android:title="@string/sortAscDescRank"></item>
                 </menu>
             </item>
         </menu>

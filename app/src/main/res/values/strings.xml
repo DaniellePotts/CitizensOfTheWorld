@@ -45,6 +45,7 @@
     <string name="sortDesc">Descending</string>
     <string name="sortAscDescName">By Name</string>
     <string name="sortAscDescLocation">By Location</string>
+    <string name="sortAscDescRank">By Rank</string>
 
     <!--currency items-->
     <string name="yen">JPY ¥</string>

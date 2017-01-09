@@ -31,6 +31,7 @@ public class PopulateDatabase {
         MtFuji.Price = 15953.91;
         MtFuji.PlannedVisit = new Date();
         MtFuji.Image = BitmapFactory.decodeResource(resources, R.drawable.mt_fuji);
+        MtFuji.Rank = 4;
 
         Location imperialPalace = new Location();
         imperialPalace.Name = "Imperial Palace";
@@ -41,6 +42,7 @@ public class PopulateDatabase {
         imperialPalace.GeoLocation[1] = 139.7506108;
         imperialPalace.Notes = "here are some notes";
         imperialPalace.Image = BitmapFactory.decodeResource(resources, R.drawable.imperial_palace);
+        imperialPalace.Rank = 4;
 
         Location museum = new Location();
         museum.Name = "National Museum of Nature and Science";
@@ -51,6 +53,7 @@ public class PopulateDatabase {
         museum.Price = 620;
         museum.Notes = "here are some notes";
         museum.Image = BitmapFactory.decodeResource(resources, R.drawable.science_museum);
+        museum.Rank = 5;
 
         Location disneyLand = new Location();
         disneyLand.Name = "Disneyland";
@@ -60,6 +63,7 @@ public class PopulateDatabase {
         disneyLand.GeoLocation[1] = 139.8782056;
         disneyLand.Price = 7400;
         disneyLand.Image = BitmapFactory.decodeResource(resources, R.drawable.disney_land);
+        disneyLand.Rank = 5;
 
         Location skytree = new Location();
         skytree.Name = "Skytree";
@@ -69,6 +73,7 @@ public class PopulateDatabase {
         skytree.GeoLocation[1] = 139.8085117;
         skytree.Price = 3000;
         skytree.Image = BitmapFactory.decodeResource(resources, R.drawable.skytree);
+        skytree.Rank = 3;
 
         Location tokyoTower = new Location();
         tokyoTower.Name = "Tokyo Tower";
@@ -78,6 +83,7 @@ public class PopulateDatabase {
         tokyoTower.GeoLocation[1] = 139.7432442;
         tokyoTower.Price = 900;
         tokyoTower.Image = BitmapFactory.decodeResource(resources, R.drawable.tokyo_tower);
+        tokyoTower.Rank = 4;
 
         Location pokeCenter = new Location();
         pokeCenter.Name = "Pokemon Center Mega Tokyo";
@@ -87,6 +93,7 @@ public class PopulateDatabase {
         pokeCenter.GeoLocation[1] = 139.7170338;
         pokeCenter.Price = 0.0;
         pokeCenter.Image = BitmapFactory.decodeResource(resources, R.drawable.poke_center);
+        pokeCenter.Rank = 5;
 
         Location onePieceTower = new Location();
         onePieceTower.Name = "Tokyo One Piece Tower";
@@ -96,6 +103,7 @@ public class PopulateDatabase {
         onePieceTower.GeoLocation[1] = 139.743181;
         onePieceTower.Price = 3000;
         onePieceTower.Image = BitmapFactory.decodeResource(resources, R.drawable.onepiecetower);
+        onePieceTower.Rank = 4;
 
         Location tokyoNationalMuseum = new Location();
         tokyoNationalMuseum.Name = "Tokyo National Museum";
@@ -105,6 +113,7 @@ public class PopulateDatabase {
         tokyoNationalMuseum.GeoLocation[1] = 139.7743328;
         tokyoNationalMuseum.Price = 620;
         tokyoNationalMuseum.Image = BitmapFactory.decodeResource(resources, R.drawable.national_museum);
+        tokyoNationalMuseum.Rank = 4;
 
         Location koishikawaKorakuen = new Location();
         koishikawaKorakuen.Name = "Koishikawa Korakuen Garden";
@@ -114,9 +123,9 @@ public class PopulateDatabase {
         koishikawaKorakuen.GeoLocation[0] = 35.7057504;
         koishikawaKorakuen.GeoLocation[1] = 139.7482184;
         koishikawaKorakuen.Image = BitmapFactory.decodeResource(resources, R.drawable.korakuen);
+        koishikawaKorakuen.Rank = 5;
 
-
-        List<Location> locationList = new ArrayList<Location>();
+        List<Location> locationList = new ArrayList<>();
         locationList.add(MtFuji);
         locationList.add(imperialPalace);
         locationList.add(museum);

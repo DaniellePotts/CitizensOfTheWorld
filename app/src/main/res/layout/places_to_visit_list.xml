@@ -68,4 +68,14 @@
         android:layout_alignLeft="@+id/priceTxt"
         android:layout_alignStart="@+id/priceTxt" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/rankTxt"
+        android:layout_below="@+id/favouriteLocation"
+        android:layout_toRightOf="@+id/locationImage"
+        android:layout_toEndOf="@+id/locationImage" />
+
 </RelativeLayout>

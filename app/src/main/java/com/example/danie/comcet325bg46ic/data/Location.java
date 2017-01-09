@@ -17,6 +17,7 @@ public class Location {
     public double [] GeoLocation;
     public double Price;
     public boolean Deletable;
+    public int Rank;
 
     public double ConvertedPrice;
 
