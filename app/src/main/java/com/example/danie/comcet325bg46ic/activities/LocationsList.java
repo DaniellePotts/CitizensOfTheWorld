@@ -44,6 +44,7 @@ import com.example.danie.comcet325bg46ic.data.DatabaseConfigData;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
 import com.example.danie.comcet325bg46ic.helpers.ImageGetIntent;
+import com.example.danie.comcet325bg46ic.helpers.PopulateDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
@@ -74,7 +75,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         relativeLayout = (RelativeLayout) findViewById(R.id.locationList);
         registerForContextMenu(relativeLayout);
         cursorAdapter = new LocationCursorAdapter(this, null, 0);
-        PopulateListView(null, null);
+        PopulateListView(null, null,5);
         final LayoutInflater li = LayoutInflater.from(LocationsList.this);
 
         final SQLDatabase db = new SQLDatabase(this);
@@ -190,10 +191,13 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         cursorAdapter.swapCursor(null);
     }
 
-    private void PopulateListView(String orderBy, CurrencyCodes code) {
+    private void PopulateListView(String orderBy, CurrencyCodes code, int recordLimit) {
         String query = "SELECT * FROM " + DatabaseConfigData.TABLE_NAME;
         if (orderBy != null) {
             query += " " + orderBy;
+        }
+        if (recordLimit > -1){
+            query += " LIMIT " + recordLimit;
         }
         SQLDatabase helper = new SQLDatabase(this);
         Cursor data = helper.OrderQuery(query.toUpperCase());
@@ -480,61 +484,73 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     }
 
     String QueryRequest = null;
+    int limitRequest = 5;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sortByAscName:
                 QueryRequest = "ORDER BY NAME ASC";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByAscLocation:
                 QueryRequest = "ORDER BY NAME ASC";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByAscRank:
                 QueryRequest = "ORDER BY RANK ASC";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByDescName:
                 QueryRequest = "ORDER BY NAME DESC";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByDescLocation:
                 QueryRequest = "ORDER BY LOCATION DESC";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByDescRank:
                 QueryRequest = "ORDER BY RANK DESC";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByFavourite:
                 QueryRequest = "WHERE favourite == 1";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByPlanned:
                 QueryRequest = "WHERE planned_visit is not null order by planned_visit";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByVisited:
                 QueryRequest = "WHERE date_visited is not null order by date_visited";
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.sortByDefault:
-                PopulateListView(QueryRequest, null);
+                PopulateListView(QueryRequest, null,limitRequest);
                 return true;
             case R.id.jpy:
-                PopulateListView(QueryRequest, CurrencyCodes.JPY);
+                PopulateListView(QueryRequest, CurrencyCodes.JPY,limitRequest);
                 return true;
             case R.id.usd:
-                PopulateListView(QueryRequest, CurrencyCodes.USD);
+                PopulateListView(QueryRequest, CurrencyCodes.USD,limitRequest);
                 return true;
             case R.id.gbp:
-                PopulateListView(QueryRequest, CurrencyCodes.GBP);
+                PopulateListView(QueryRequest, CurrencyCodes.GBP,limitRequest);
                 return true;
             case R.id.eur:
-                PopulateListView(QueryRequest, CurrencyCodes.EUR);
+                PopulateListView(QueryRequest, CurrencyCodes.EUR, limitRequest);
                 return true;
+            case R.id.display10Records:
+                limitRequest = 10;
+                PopulateListView(QueryRequest,null,limitRequest);
+                return true;
+            case R.id.display5Records:
+                limitRequest = 5;
+                PopulateListView(QueryRequest,null,limitRequest);
+                return true;
+            case R.id.displayAllRecords:
+                limitRequest = -1;
+                PopulateListView(QueryRequest,null,limitRequest);
         }
         return false;
     }

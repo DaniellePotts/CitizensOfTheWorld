@@ -60,5 +60,17 @@
                 android:title="@string/gbp"></item>
         </menu>
     </item>
+    <item android:id="@+id/numRecordsToDisplay"
+        android:title="@string/numRecordToShow">
+        <menu>
+            <item android:id="@+id/display5Records"
+                android:title="@string/recordCount5"></item>
+            <item android:id="@+id/display10Records"
+                android:title="@string/recordCount10"></item>
+            <item android:id="@+id/displayAllRecords"
+                android:title="@string/recordCountAll"></item>
+        </menu>
+
+    </item>
 
 </menu>
