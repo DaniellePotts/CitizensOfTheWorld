@@ -9,6 +9,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -44,18 +46,24 @@ import com.example.danie.comcet325bg46ic.data.DatabaseConfigData;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.data.LocationCursorAdapter;
 import com.example.danie.comcet325bg46ic.helpers.ImageGetIntent;
-import com.example.danie.comcet325bg46ic.helpers.PopulateDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class LocationsList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LocationsList extends AppCompatActivity implements OnMapReadyCallback, LoaderManager.LoaderCallbacks<Cursor> {
 
     Uri uri;
     CursorAdapter cursorAdapter;
@@ -68,6 +76,8 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
     RadioButton selectPhoto;
     RelativeLayout relativeLayout = null;
     CurrencyCodes defaultCurrency;
+    GoogleMap map;
+    OnMapReadyCallback mapReadyCallback = this;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +85,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         relativeLayout = (RelativeLayout) findViewById(R.id.locationList);
         registerForContextMenu(relativeLayout);
         cursorAdapter = new LocationCursorAdapter(this, null, 0);
-        PopulateListView(null, null,5);
+        PopulateListView(null, null, 5);
         final LayoutInflater li = LayoutInflater.from(LocationsList.this);
 
         final SQLDatabase db = new SQLDatabase(this);
@@ -90,7 +100,116 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 final FloatingActionButton edit_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.edit_button);
                 final FloatingActionButton notes_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.notes);
 
-                DetailedView(l);
+                final SQLDatabase db = new SQLDatabase(c);
+                final LayoutInflater li = LayoutInflater.from(LocationsList.this);
+                final AlertDialog.Builder alertDiaglogBuilder = new AlertDialog.Builder(LocationsList.this);
+                alertDiaglogBuilder.setView(getEmpIdView);
+
+                final TextView name = (TextView) getEmpIdView.findViewById(R.id.nameTxt);
+                final TextView location = (TextView) getEmpIdView.findViewById(R.id.locationTxt);
+                final TextView description = (TextView) getEmpIdView.findViewById(R.id.descriptionTxt);
+                final TextView price = (TextView) getEmpIdView.findViewById(R.id.priceTxt);
+                final RatingBar favourite = (RatingBar) getEmpIdView.findViewById(R.id.ratingBar);
+                final TextView dateVisited = (TextView) getEmpIdView.findViewById(R.id.dateVisitedLbl);
+                final TextView plannedVisit = (TextView) getEmpIdView.findViewById(R.id.plannedVisitLbl);
+                final CheckBox plannedCheckBox = (CheckBox) getEmpIdView.findViewById(R.id.plannedCheck);
+                final CheckBox visitedCheckBox = (CheckBox) getEmpIdView.findViewById(R.id.visitedCheck);
+
+                if (l.Deletable) {
+                    FloatingActionButton delete_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.delete_button);
+                    delete_fab.setVisibility(View.VISIBLE);
+                    delete_fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            AlertDialog.Builder alertDelete = new AlertDialog.Builder(LocationsList.this);
+                            alertDelete.setMessage("Delete " + l.Name + "?");
+                            alertDelete.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    db.DeleteLocation(l);
+                                    finish();
+                                }
+                            }).create().show(); //TODO: set negative/cancel value :)
+                        }
+                    });
+                }
+
+                plannedVisit.setText(l.PlannedVisit != null ? "Planned visit: " + l.PlannedVisit.toString() : "");
+                dateVisited.setText(l.DateVisited != null ? "Date visited:" + l.DateVisited.toString() : "");
+                plannedCheckBox.setChecked(l.PlannedVisit != null ? true : false);
+                visitedCheckBox.setChecked(l.DateVisited != null ? true : false);
+
+                if (!plannedCheckBox.isChecked()) {
+                    visitedCheckBox.setEnabled(false);
+                }
+                visitedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        if (visitedCheckBox.isChecked()) {
+                            AlertDialog.Builder defaultDate = new AlertDialog.Builder(c);
+                            defaultDate.setPositiveButton("Set Default Date", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Calendar calendar = Calendar.getInstance();
+                                    l.DateVisited = calendar.getTime();
+                                    dateVisited.setText(l.DateVisited.toString());
+                                }
+                            }).setNeutralButton("Set Custom Date", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    GetDate(l, dateVisited, false, true);
+                                }
+                            }).create().show();
+                        }
+                    }
+                });
+
+                plannedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (plannedCheckBox.isChecked()) {
+                            GetDate(l, plannedVisit, true, false);
+                            visitedCheckBox.setEnabled(true);
+                        } else if (!plannedCheckBox.isChecked()) {
+                            visitedCheckBox.setEnabled(false);
+                            visitedCheckBox.setChecked(false);
+                        }
+                    }
+                });
+                favourite.setRating(l.Favorite ? 1 : 0);
+                name.setText(l.Name);
+                location.setText(l.Location);
+                description.setText(l.Description);
+                price.setText(Double.toString(l.Price));
+
+                favourite.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        l.Favorite = favourite.getRating() == 1 ? true : false;
+                        Toast.makeText(getApplicationContext(), (favourite.getRating() == 1 ? "Favourited " : "Unfavourited ") + l.Name, Toast.LENGTH_LONG).show();
+                        db.UpdateLocation(l);
+                    }
+                });
+                if (l.Image != null) {
+                    final ImageView locationImage = (ImageView) getEmpIdView.findViewById(R.id.locationImage);
+                    locationImage.setImageBitmap(l.Image);
+
+                    locationImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final LayoutInflater li = LayoutInflater.from(LocationsList.this);
+                            View fullSizeImageView = li.inflate(R.layout.full_size_image, null);
+                            AlertDialog.Builder fullSizeImageDialog = new AlertDialog.Builder(c);
+                            fullSizeImageDialog.setView(fullSizeImageView);
+                            ImageView fullSizeImage = (ImageView) fullSizeImageView.findViewById(R.id.fullSizeImage);
+                            fullSizeImage.setImageBitmap(l.Image);
+                            fullSizeImageDialog.create().show();
+                        }
+                    });
+                }
+
+                alertDiaglogBuilder.create().show();
 
                 edit_fab.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -105,9 +224,67 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                         final EditText price = (EditText) getEditView.findViewById(R.id.priceTxt);
                         image = (ImageView) getEditView.findViewById(R.id.locationImage);
                         final Button btnGetImage = (Button) getEditView.findViewById(R.id.btnGetImage);
+                        final Button btnSetLocation = (Button)getEditView.findViewById(R.id.setLocation);
                         get_image = (RadioGroup) getEditView.findViewById(R.id.get_image);
                         selectPhoto = (RadioButton) getEditView.findViewById(R.id.rdoUpload);
                         takePhoto = (RadioButton) getEditView.findViewById(R.id.rdoTakePic);
+
+                        btnSetLocation.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                AlertDialog.Builder mapDialog = new AlertDialog.Builder(getApplicationContext());
+                                View mapView = li.inflate(R.layout.activity_maps,null);
+                                mapDialog.setView(mapView);
+
+                                final EditText txtSearch = (EditText)mapView.findViewById(R.id.address);
+                                final Button search = (Button)mapView.findViewById(R.id.search);
+
+                                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                                        .findFragmentById(R.id.map);
+                                mapFragment.getMapAsync(mapReadyCallback);
+
+                                final double [] geoLoc = new double[2];
+                                lat = l.GeoLocation[0];
+                                lng = l.GeoLocation[1];
+
+                                txtSearch.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        List<Address> geocodeMatches = null;
+                                        if (txtSearch.getText().toString().equals("")) {
+                                            Toast.makeText(getApplicationContext(),"No location was entered.",Toast.LENGTH_LONG).show();
+                                        } else {
+                                            try {
+                                                geocodeMatches = new Geocoder(getApplicationContext()).getFromLocationName(
+                                                        search.getText().toString(), 1);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            if (!geocodeMatches.isEmpty()) {
+                                                geoLoc[0] = geocodeMatches.get(0).getLatitude();
+                                                geoLoc[1] = geocodeMatches.get(0).getLongitude();
+                                                map.addMarker(new MarkerOptions().position(
+                                                        new LatLng(geoLoc[0], geoLoc[1])).title(search.getText().toString())).showInfoWindow();
+
+                                                LatLng posLL = new LatLng(geoLoc[0], geoLoc[1]);
+                                                map.moveCamera(CameraUpdateFactory.newLatLng(posLL));
+                                            }
+                                        }
+                                    }
+                                });
+
+                                mapDialog.setPositiveButton("Set Location", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        l.GeoLocation[0] = geoLoc[0];
+                                        l.GeoLocation[1] = geoLoc[1];
+                                    }
+                                });
+                                mapDialog.create().show();
+                            }
+                        });
                         btnGetImage.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -196,7 +373,7 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         if (orderBy != null) {
             query += " " + orderBy;
         }
-        if (recordLimit > -1){
+        if (recordLimit > -1) {
             query += " LIMIT " + recordLimit;
         }
         SQLDatabase helper = new SQLDatabase(this);
@@ -336,7 +513,8 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                     }
                 });
 
-                addLocationDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                addLocationDialog.setCancelable(true)
+                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         locationToAdd.Deletable = true;
@@ -362,121 +540,6 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         cursorAdapter.changeCursor(c);
     }
 
-    public void DetailedView(Location loc) {
-        final Location l = loc;
-        final SQLDatabase db = new SQLDatabase(c);
-        final LayoutInflater li = LayoutInflater.from(LocationsList.this);
-        View getEmpIdView = li.inflate(R.layout.detailed_location, null);
-        final AlertDialog.Builder alertDiaglogBuilder = new AlertDialog.Builder(LocationsList.this);
-        alertDiaglogBuilder.setView(getEmpIdView);
-
-        final TextView name = (TextView) getEmpIdView.findViewById(R.id.nameTxt);
-        final TextView location = (TextView) getEmpIdView.findViewById(R.id.locationTxt);
-        final TextView description = (TextView) getEmpIdView.findViewById(R.id.descriptionTxt);
-        final TextView price = (TextView) getEmpIdView.findViewById(R.id.priceTxt);
-        final RatingBar favourite = (RatingBar) getEmpIdView.findViewById(R.id.ratingBar);
-        final TextView dateVisited = (TextView) getEmpIdView.findViewById(R.id.dateVisitedLbl);
-        final TextView plannedVisit = (TextView) getEmpIdView.findViewById(R.id.plannedVisitLbl);
-        final CheckBox plannedCheckBox = (CheckBox) getEmpIdView.findViewById(R.id.plannedCheck);
-        final CheckBox visitedCheckBox = (CheckBox) getEmpIdView.findViewById(R.id.visitedCheck);
-
-        if (l.Deletable) {
-            FloatingActionButton delete_fab = (FloatingActionButton) getEmpIdView.findViewById(R.id.delete_button);
-            delete_fab.setVisibility(View.VISIBLE);
-            delete_fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder alertDelete = new AlertDialog.Builder(LocationsList.this);
-                    alertDelete.setMessage("Delete " + l.Name + "?");
-                    alertDelete.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            db.DeleteLocation(l);
-                            finish();
-                        }
-                    }).create().show(); //TODO: set negative/cancel value :)
-                }
-            });
-        }
-
-        plannedVisit.setText(l.PlannedVisit != null ? "Planned visit: " + l.PlannedVisit.toString() : "");
-        dateVisited.setText(l.DateVisited != null ? "Date visited:" + l.DateVisited.toString() : "");
-        plannedCheckBox.setChecked(l.PlannedVisit != null ? true : false);
-        visitedCheckBox.setChecked(l.DateVisited != null ? true : false);
-
-        if (!plannedCheckBox.isChecked()) {
-            visitedCheckBox.setEnabled(false);
-        }
-        visitedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (visitedCheckBox.isChecked()) {
-                    AlertDialog.Builder defaultDate = new AlertDialog.Builder(c);
-                    defaultDate.setPositiveButton("Set Default Date", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Calendar calendar = Calendar.getInstance();
-                            l.DateVisited = calendar.getTime();
-                            dateVisited.setText(l.DateVisited.toString());
-                        }
-                    }).setNeutralButton("Set Custom Date", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            GetDate(l, dateVisited, false, true);
-                        }
-                    }).create().show();
-                }
-            }
-        });
-
-        plannedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (plannedCheckBox.isChecked()) {
-                    GetDate(l, plannedVisit, true, false);
-                    visitedCheckBox.setEnabled(true);
-                } else if (!plannedCheckBox.isChecked()) {
-                    visitedCheckBox.setEnabled(false);
-                    visitedCheckBox.setChecked(false);
-                }
-            }
-        });
-        favourite.setRating(l.Favorite ? 1 : 0);
-        name.setText(l.Name);
-        location.setText(l.Location);
-        description.setText(l.Description);
-        price.setText(Double.toString(l.Price));
-
-        favourite.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                l.Favorite = favourite.getRating() == 1 ? true : false;
-                Toast.makeText(getApplicationContext(), (favourite.getRating() == 1 ? "Favourited " : "Unfavourited ") + l.Name, Toast.LENGTH_LONG).show();
-                db.UpdateLocation(l);
-            }
-        });
-        if (l.Image != null) {
-            final ImageView locationImage = (ImageView) getEmpIdView.findViewById(R.id.locationImage);
-            locationImage.setImageBitmap(l.Image);
-
-            locationImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final LayoutInflater li = LayoutInflater.from(LocationsList.this);
-                    View fullSizeImageView = li.inflate(R.layout.full_size_image, null);
-                    AlertDialog.Builder fullSizeImageDialog = new AlertDialog.Builder(c);
-                    fullSizeImageDialog.setView(fullSizeImageView);
-                    ImageView fullSizeImage = (ImageView) fullSizeImageView.findViewById(R.id.fullSizeImage);
-                    fullSizeImage.setImageBitmap(l.Image);
-                    fullSizeImageDialog.create().show();
-                }
-            });
-        }
-
-        alertDiaglogBuilder.create().show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -491,66 +554,69 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
         switch (item.getItemId()) {
             case R.id.sortByAscName:
                 QueryRequest = "ORDER BY NAME ASC";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByAscLocation:
                 QueryRequest = "ORDER BY NAME ASC";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByAscRank:
                 QueryRequest = "ORDER BY RANK ASC";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByDescName:
                 QueryRequest = "ORDER BY NAME DESC";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByDescLocation:
                 QueryRequest = "ORDER BY LOCATION DESC";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByDescRank:
                 QueryRequest = "ORDER BY RANK DESC";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByFavourite:
                 QueryRequest = "WHERE favourite == 1";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByPlanned:
                 QueryRequest = "WHERE planned_visit is not null order by planned_visit";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByVisited:
                 QueryRequest = "WHERE date_visited is not null order by date_visited";
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.sortByDefault:
-                PopulateListView(QueryRequest, null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.jpy:
-                PopulateListView(QueryRequest, CurrencyCodes.JPY,limitRequest);
+                PopulateListView(QueryRequest, CurrencyCodes.JPY, limitRequest);
                 return true;
             case R.id.usd:
-                PopulateListView(QueryRequest, CurrencyCodes.USD,limitRequest);
+                PopulateListView(QueryRequest, CurrencyCodes.USD, limitRequest);
                 return true;
             case R.id.gbp:
-                PopulateListView(QueryRequest, CurrencyCodes.GBP,limitRequest);
+                PopulateListView(QueryRequest, CurrencyCodes.GBP, limitRequest);
                 return true;
             case R.id.eur:
                 PopulateListView(QueryRequest, CurrencyCodes.EUR, limitRequest);
                 return true;
             case R.id.display10Records:
                 limitRequest = 10;
-                PopulateListView(QueryRequest,null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.display5Records:
                 limitRequest = 5;
-                PopulateListView(QueryRequest,null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
                 return true;
             case R.id.displayAllRecords:
                 limitRequest = -1;
-                PopulateListView(QueryRequest,null,limitRequest);
+                PopulateListView(QueryRequest, null, limitRequest);
+                return true;
+            case R.id.faveCurrency:
+                return true;
         }
         return false;
     }
@@ -588,5 +654,19 @@ public class LocationsList extends AppCompatActivity implements LoaderManager.Lo
                 db.UpdateLocation(l);
             }
         }).create().show();
+    }
+
+    public void SetFavouriteCurrency() {
+
+    }
+
+    double lat = 0.0;
+    double lng = 0.0;
+
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        LatLng loc = new LatLng(lat != 0.0 ? lat : -34, lng != 0.0 ? lng : 151);
+        map.addMarker(new MarkerOptions().position(loc));
+        map.moveCamera(CameraUpdateFactory.newLatLng(loc));
     }
 }

@@ -7,10 +7,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.MainActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/coverPhoto"
+    <ViewFlipper
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoStart="true"
+        android:id="@+id/view_flipper"
+        android:flipInterval="10000">
+        <ImageView
+        android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
@@ -18,16 +23,63 @@
         android:scaleType="fitXY"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:src="@drawable/tokyocity"/>
+        android:src="@drawable/sunset_japan2"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:scaleType="fitXY"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/sunset_japan"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:scaleType="fitXY"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/skytree_2"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:scaleType="fitXY"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/tokyocity"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:scaleType="fitXY"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/skytree_2"/>
+    </ViewFlipper>
+
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="50dp"
-        android:id="@+id/editText"
-        android:background="@color/white"
+        android:id="@+id/search"
+        android:background="@drawable/edit_style"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="211dp" />
+        android:layout_marginTop="211dp"
+        android:hint=" Search Location..." />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -42,6 +94,23 @@
             android:id="@+id/budgetPlannerButton"
             android:src="@drawable/ic_action_budget_planner"
             android:onClick="OpenBudgetPlanner"
-            android:visibility="visible"/>
+            android:visibility="visible" />
     </android.support.design.widget.CoordinatorLayout>
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/logo"
+        android:layout_alignBottom="@+id/search"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@drawable/swipe"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

@@ -72,5 +72,12 @@
         </menu>
 
     </item>
+    <item android:id="@+id/setPreferences"
+        android:title="@string/preferences">
+        <menu>
+            <item android:id="@+id/faveCurrency"
+                android:title="@string/setFaveCurrency"></item>
+        </menu>
+    </item>
 
 </menu>

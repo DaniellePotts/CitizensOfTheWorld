@@ -57,10 +57,15 @@
     <string name="sortFilter">Filter</string>
     <string name="orderBy">Order</string>
     <string name="currencySort">Currency</string>
-    
+
     <!--menu for displaying x records-->
     <string name="numRecordToShow">Number of Records</string>
     <string name="recordCount5">Show 5</string>
     <string name="recordCount10">Show 10</string>
     <string name="recordCountAll">Show All</string>
+
+    <!--User preferences-->
+    <string name="preferences">User Preferences</string>
+    <string name="setFaveCurrency">Favourite Currency</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
