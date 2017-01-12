@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.danie.comcet325bg46ic.AddLocation;
 import com.example.danie.comcet325bg46ic.R;
 import com.example.danie.comcet325bg46ic.data.CurrencyCodes;
 import com.example.danie.comcet325bg46ic.data.DatabaseConfigData;
@@ -456,6 +457,13 @@ public class LocationsList extends AppCompatActivity implements OnMapReadyCallba
         addLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),AddLocation.class);
+                startActivity(intent);
+            }
+        });
+       /* addLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
                 AlertDialog.Builder addLocationDialog = new AlertDialog.Builder(LocationsList.this);
                 View addLocationView = li.inflate(R.layout.add_location, null);
@@ -533,7 +541,7 @@ public class LocationsList extends AppCompatActivity implements OnMapReadyCallba
                     }
                 }).create().show();
             }
-        });
+        });*/
     }
 
     public void ReloadCursor(Cursor c) {
