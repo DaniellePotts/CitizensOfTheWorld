@@ -16,8 +16,9 @@
     <string name="radioBtnTakePic">Take Photo</string>
     <string name="ranking">Ranking</string>
 
-    <string name="dateVisitedLbl">Date Visited</string>
-    <string name="plannedVisitLbl">Planned Visit</string>
+    <string name="dateVisitedLbl">Date Visited: </string>
+    <string name="plannedVisitLbl">Planned Visit: </string>
+    <string name="latLngLbls">Lat/Lng: </string>
     <string-array name="listSorting">
         <item>All</item>
         <item>Favourite</item>

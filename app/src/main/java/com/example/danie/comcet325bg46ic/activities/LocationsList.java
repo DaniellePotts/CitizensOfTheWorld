@@ -41,6 +41,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.danie.comcet325bg46ic.AddLocation;
+import com.example.danie.comcet325bg46ic.EditLocation;
 import com.example.danie.comcet325bg46ic.R;
 import com.example.danie.comcet325bg46ic.data.CurrencyCodes;
 import com.example.danie.comcet325bg46ic.data.DatabaseConfigData;
@@ -214,6 +215,9 @@ public class LocationsList extends AppCompatActivity implements OnMapReadyCallba
 
                 edit_fab.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
+                        Intent editActivity = new Intent(getApplicationContext(),EditLocation.class);
+                        editActivity.putExtra("id",l.ID);
+                        startActivity(editActivity);
                         View getEditView = li.inflate(R.layout.edit_location, null);
                         final AlertDialog.Builder editLocationDialog = new AlertDialog.Builder(LocationsList.this);
 
@@ -390,7 +394,6 @@ public class LocationsList extends AppCompatActivity implements OnMapReadyCallba
 
             defaultCurrency = code;
         }
-
     }
 
     public String SaveImage(Bitmap b) {
@@ -452,8 +455,6 @@ public class LocationsList extends AppCompatActivity implements OnMapReadyCallba
 
     public void AddLocationUI() {
         final FloatingActionButton addLocation = (FloatingActionButton) findViewById(R.id.add_location);
-        final LayoutInflater li = LayoutInflater.from(LocationsList.this);
-        final Location locationToAdd = new Location();
         addLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -461,87 +462,6 @@ public class LocationsList extends AppCompatActivity implements OnMapReadyCallba
                 startActivity(intent);
             }
         });
-       /* addLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                AlertDialog.Builder addLocationDialog = new AlertDialog.Builder(LocationsList.this);
-                View addLocationView = li.inflate(R.layout.add_location, null);
-                addLocationDialog.setView(addLocationView);
-                final EditText locationNameTxt = (EditText) addLocationView.findViewById(R.id.locationName);
-                final EditText locationTxt = (EditText) addLocationView.findViewById(R.id.locationText);
-                final EditText descriptionTxt = (EditText) addLocationView.findViewById(R.id.descriptionText);
-                final EditText priceTxt = (EditText) addLocationView.findViewById(R.id.priceTxt);
-                image = (ImageView) addLocationView.findViewById(R.id.imgPreview);
-                get_image = (RadioGroup) addLocationView.findViewById(R.id.imageChoices);
-                takePhoto = (RadioButton) addLocationView.findViewById(R.id.TakePhoto);
-                selectPhoto = (RadioButton) addLocationView.findViewById(R.id.UploadImage);
-                final Button selectImage = (Button) addLocationView.findViewById(R.id.getImageBtn);
-                final Button plannedVisit = (Button) addLocationView.findViewById(R.id.plannedVisit);
-
-                plannedVisit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder setDateDialog = new AlertDialog.Builder(LocationsList.this);
-                        View datetimeview = li.inflate(R.layout.time_date_picker, null);
-                        setDateDialog.setView(datetimeview);
-                        final DatePicker datePicker = (DatePicker) datetimeview.findViewById(R.id.datePicker);
-                        final TimePicker timePicker = (TimePicker) datetimeview.findViewById(R.id.timePicker);
-                        setDateDialog.setPositiveButton("Set", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int day = datePicker.getDayOfMonth();
-                                int month = datePicker.getMonth();
-                                int year = datePicker.getYear();
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.set(year, month, day);
-                                calendar.set(Calendar.HOUR, timePicker.getCurrentHour());
-                                calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-                                locationToAdd.PlannedVisit = calendar.getTime();
-                            }
-                        }).create().show();
-                    }
-                });
-
-                selectImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = ImageGetIntent.SetImageIntent(takePhoto.isChecked(), selectPhoto.isChecked());
-                        if (intent != null) {
-                            if (intent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(intent, ImageGetIntent.ActivityCode);
-                            }
-                        }
-                        if (getParent() == null) {
-                            setResult(RESULT_OK, intent);
-
-                        } else {
-                            getParent().setResult(RESULT_OK, intent);
-                        }
-                    }
-                });
-
-                addLocationDialog.setCancelable(true)
-                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        locationToAdd.Deletable = true;
-                        locationToAdd.Name = locationNameTxt.getText().toString();
-                        locationToAdd.Price = Double.parseDouble(priceTxt.getText().toString());
-                        locationToAdd.Description = descriptionTxt.getText().toString();
-                        locationToAdd.Location = locationTxt.getText().toString();
-                        locationToAdd.FileName = SaveImage(imageOverwrite);
-                        if (imageOverwrite == null) {
-                            locationToAdd.FileName = SaveImage(BitmapFactory.decodeResource(getResources(), R.drawable.default_icon));
-                        }
-                        SQLDatabase db = new SQLDatabase(c);
-                        db.addLocation(locationToAdd);
-                        Toast.makeText(getApplicationContext(), "Location was added.", Toast.LENGTH_LONG).show();
-                        ReloadCursor(cursorAdapter.getCursor());
-                    }
-                }).create().show();
-            }
-        });*/
     }
 
     public void ReloadCursor(Cursor c) {

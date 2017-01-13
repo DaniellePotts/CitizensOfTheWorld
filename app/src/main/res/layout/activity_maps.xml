@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MapsActivity">
 
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,4 +32,19 @@
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/search"
         android:layout_toEndOf="@+id/search" />
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true">
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:layout_margin="20dp"
+            app:fabSize="mini"
+            android:id="@+id/setCoords"
+            android:src="@drawable/ic_action_ok"
+            android:visibility="visible"/>
+    </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>

@@ -1,7 +1,10 @@
 package com.example.danie.comcet325bg46ic.data;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -37,6 +40,10 @@ public class Location {
         //DateVisited = new Date();
     }
 
+    public void SetCoordinates(double lat, double lng){
+        GeoLocation[0] = lat;
+        GeoLocation[1] = lng;
+    }
     public String toString(){
         return ""; //TODO: UPDATE
     }

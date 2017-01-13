@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:id="@+id/name"
         android:layout_alignParentTop="true"
@@ -17,7 +17,7 @@
         android:layout_marginTop="36dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:id="@+id/location"
         android:layout_below="@+id/name"
@@ -25,7 +25,7 @@
         android:layout_alignStart="@+id/name" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
@@ -36,26 +36,10 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/priceTxt"
+        android:id="@+id/view">
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="20dp"
-            app:fabSize="mini"
-            android:id="@+id/photoBtn"
-            android:src="@drawable/ic_action_photo"
-            android:visibility="visible"/>
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="20dp"
-            app:fabSize="mini"
-            android:id="@+id/mapsBtn"
-            android:src="@drawable/ic_action_maps"
-            android:visibility="visible"/>
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,20 +52,117 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="120dp"
         android:id="@+id/previewImg"
-        android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/description"
-        android:layout_alignStart="@+id/description" />
+        android:src="@drawable/default_icon"
+        android:layout_below="@+id/geoCoordsLbl"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/details"
-        android:layout_below="@+id/previewImg"
-        android:layout_alignLeft="@+id/previewImg"
-        android:layout_alignStart="@+id/previewImg"
-        android:layout_marginTop="41dp" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/latLngLbls"
+        android:id="@+id/geoCoordsLbl"
+        android:layout_below="@+id/dateVisitedLbl"
+        android:layout_alignLeft="@+id/dateVisitedLbl"
+        android:layout_alignStart="@+id/dateVisitedLbl" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/plannedVisitLbl"
+        android:id="@+id/plannedVisitLbl"
+        android:layout_alignTop="@+id/view"
+        android:layout_alignLeft="@+id/priceTxt"
+        android:layout_alignStart="@+id/priceTxt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/dateVisitedLbl"
+        android:id="@+id/dateVisitedLbl"
+        android:layout_below="@+id/plannedVisitLbl"
+        android:layout_alignLeft="@+id/plannedVisitLbl"
+        android:layout_alignStart="@+id/plannedVisitLbl" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        app:fabSize="mini"
+        android:id="@+id/setDates"
+        android:src="@drawable/ic_action_date"
+        android:visibility="visible"
+        android:layout_marginBottom="22dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/plannedVisitLbl"
+        android:layout_alignEnd="@+id/plannedVisitLbl" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:fabSize="mini"
+        android:id="@+id/photoBtn"
+        android:src="@drawable/ic_action_photo"
+        android:visibility="visible"
+        android:layout_alignTop="@+id/setDates"
+        android:layout_alignRight="@+id/description"
+        android:layout_alignEnd="@+id/description" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        app:fabSize="mini"
+        android:id="@+id/mapsBtn"
+        android:src="@drawable/ic_action_maps"
+        android:visibility="visible"
+        android:layout_alignTop="@+id/setDates"
+        android:layout_centerHorizontal="true" />
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:id="@+id/addLocation"
+        android:src="@drawable/ic_action_ok"
+        android:visibility="visible"
+        android:layout_alignTop="@+id/photoBtn"
+        android:layout_toRightOf="@+id/photoBtn"
+        android:layout_toEndOf="@+id/photoBtn"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp" />
+
+    <EditText
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/priceTxt"
+        android:hint="Price"
+        android:layout_below="@+id/description"
+        android:layout_toLeftOf="@+id/addLocation"
+        android:layout_toStartOf="@+id/addLocation" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Favourite"
+        android:id="@+id/setFavourite"
+        android:layout_alignTop="@+id/name"
+        android:layout_alignRight="@+id/addLocation"
+        android:layout_alignEnd="@+id/addLocation" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ranking"
+        android:layout_above="@+id/setDates"
+        android:layout_centerHorizontal="true"
+        android:stepSize="1.0"/>
+
 </RelativeLayout>

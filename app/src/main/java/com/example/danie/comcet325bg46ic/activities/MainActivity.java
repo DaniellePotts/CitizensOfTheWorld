@@ -90,9 +90,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 return false;
             }
         });
-        if(isFirstRun){
+        /*if(isFirstRun){
             Populate();
-        }
+        }*/
     }
 
     public Location SearchForLocation(String loc){

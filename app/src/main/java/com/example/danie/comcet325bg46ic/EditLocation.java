@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,9 +29,9 @@ import android.widget.Toast;
 import com.example.danie.comcet325bg46ic.activities.LocationsList;
 import com.example.danie.comcet325bg46ic.data.Location;
 import com.example.danie.comcet325bg46ic.helpers.ImageGetIntent;
+import com.example.danie.comcet325bg46ic.helpers.PopulateDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SQLDatabase;
 import com.example.danie.comcet325bg46ic.helpers.SaveLoadImages;
-import android.location.Address;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -48,56 +49,96 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by danie on 12/01/2017.
+ * Created by danie on 13/01/2017.
  */
-public class AddLocation extends AppCompatActivity implements OnMapReadyCallback {
+public class EditLocation extends AppCompatActivity implements OnMapReadyCallback{
+
+    Location editableLocation = null;
 
     EditText name, location, description, price;
-
+    TextView plannedVisitLbl, dateVisitedLbl,geoLocation;
     ImageView previewImage;
-    TextView coordsLbl, dateVisitLbl, plannedVisitLbl;
-    FloatingActionButton notesFab, mapsFab, pictureFab, setdates, addLocation;
+    Bitmap imageOverwrite;
     CheckBox favourite;
     RatingBar ranking;
-    Bitmap image;
-    double[] coords = new double[2];
-    Date plannedDate = null;
-    Date visitedDate = null;
-    String notes = "";
 
-    Context c = this;
-    OnMapReadyCallback mapReadyCallback = this;
+    FloatingActionButton notesFab, mapsFab, pictureFab, setdates, editLocation;
 
     GoogleMap map;
 
+    double [] coords = new double[2];
+    String notes = "";
+    Context c = this;
+    OnMapReadyCallback mapReadyCallback = this;
+
+    Date plannedDate = null;
+    Date visitedDate = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.add_edit_location);
 
-        name = (EditText) findViewById(R.id.name);
-        location = (EditText) findViewById(R.id.location);
-        description = (EditText) findViewById(R.id.description);
+        GetLocation();
+
+        name = (EditText)findViewById(R.id.name);
+        location = (EditText)findViewById(R.id.location);
+        description = (EditText)findViewById(R.id.description);
         price = (EditText)findViewById(R.id.priceTxt);
-        previewImage = (ImageView) findViewById(R.id.previewImg);
-        coordsLbl = (TextView) findViewById(R.id.geoCoordsLbl);
-        dateVisitLbl = (TextView)findViewById(R.id.dateVisitedLbl);
         plannedVisitLbl = (TextView)findViewById(R.id.plannedVisitLbl);
+        dateVisitedLbl = (TextView)findViewById(R.id.dateVisitedLbl);
+        geoLocation = (TextView)findViewById(R.id.geoCoordsLbl);
+
+        previewImage = (ImageView)findViewById(R.id.previewImg);
 
         notesFab = (FloatingActionButton) findViewById(R.id.notesBtn);
         mapsFab = (FloatingActionButton) findViewById(R.id.mapsBtn);
         pictureFab = (FloatingActionButton) findViewById(R.id.photoBtn);
         setdates = (FloatingActionButton) findViewById(R.id.setDates);
-        addLocation = (FloatingActionButton)findViewById(R.id.addLocation);
+        editLocation = (FloatingActionButton)findViewById(R.id.addLocation);
+
+        notesFab = (FloatingActionButton) findViewById(R.id.notesBtn);
+        mapsFab = (FloatingActionButton) findViewById(R.id.mapsBtn);
+        pictureFab = (FloatingActionButton) findViewById(R.id.photoBtn);
+        setdates = (FloatingActionButton) findViewById(R.id.setDates);
+        editLocation = (FloatingActionButton)findViewById(R.id.addLocation);
 
         favourite =(CheckBox)findViewById(R.id.setFavourite);
         ranking = (RatingBar)findViewById(R.id.ranking);
+
+        PopulateData();
 
         SetImage();
         SetDate();
         SetNotes();
         SetGeoCoords();
-        AddLocation();
+        EditLocation();
+    }
+
+    public void PopulateData(){
+        name.setText(editableLocation.Name);
+        location.setText(editableLocation.Location);
+        description.setText(editableLocation.Description);
+        price.setText(Double.toString(editableLocation.Price));
+        SaveLoadImages loadImages = new SaveLoadImages();
+        imageOverwrite = loadImages.LoadImage(editableLocation.FileName);
+        previewImage.setImageBitmap(imageOverwrite);
+        notes = editableLocation.Notes;
+        plannedVisitLbl.setText(editableLocation.PlannedVisit != null ? editableLocation.PlannedVisit.toString() : "Planned Visit: ");
+        dateVisitedLbl.setText(editableLocation.DateVisited != null ? editableLocation.DateVisited.toString() : "Visit Date: ");
+        geoLocation.setText(Double.toString(editableLocation.GeoLocation[0]) + " , " + Double.toString(editableLocation.GeoLocation[1]));
+        if(editableLocation.Favorite){
+            favourite.setChecked(true);
+        }
+
+        ranking.setRating((float)editableLocation.Rank);
+    }
+
+    public void GetLocation(){
+        int id = getIntent().getIntExtra("id",-1);
+
+        if(id > -1){
+            SQLDatabase db = new SQLDatabase(this);
+            editableLocation = db.GetLocation(id);
+        }
     }
 
     public void SetGeoCoords()
@@ -122,13 +163,13 @@ public class AddLocation extends AppCompatActivity implements OnMapReadyCallback
                 setCoords.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        coordsLbl.setText("Coordinates: " + coords[0] + " , " + coords[1]);
+                        geoLocation.setText("Coordinates: " + coords[0] + " , " + coords[1]);
                     }
                 });
                 searchBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        List<Address>coordMatches = null;
+                        List<Address> coordMatches = null;
                         if (searchTxt.getText().toString().equals("")) {
                             Toast.makeText(getApplicationContext(),"No location was entered.",Toast.LENGTH_LONG).show();
                         } else {
@@ -212,7 +253,7 @@ public class AddLocation extends AppCompatActivity implements OnMapReadyCallback
                         Intent intent = ImageGetIntent.SetImageIntent(false, true);
                         startActivityForResult(intent, 3);
 
-                       GetImageIntentResult(intent);
+                        GetImageIntentResult(intent);
                     }
                 }).setPositiveButton("Take Picture", new DialogInterface.OnClickListener() {
                     @Override
@@ -238,29 +279,30 @@ public class AddLocation extends AppCompatActivity implements OnMapReadyCallback
             }
         }
     }
-    public void AddLocation() {
-        addLocation.setOnClickListener(new View.OnClickListener() {
+
+    public void EditLocation() {
+
+        editLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Location newLocation = new Location();
-
-                newLocation.Deletable = true;
-                newLocation.Name = name.getText().toString();
-                newLocation.Location = location.getText().toString();
-                newLocation.Description = description.getText().toString();
-                newLocation.SetCoordinates(coords[0], coords[1]);
-                newLocation.PlannedVisit = plannedDate;
-                newLocation.DateVisited = visitedDate;
-                newLocation.Notes = notes;
-                newLocation.Price = Double.parseDouble(price.getText().toString());
-                newLocation.Favorite = favourite.isChecked();
-                newLocation.Rank = ranking.getNumStars();
-                if(image != null){
-                    newLocation.FileName = SaveImage(image);
+                editableLocation.Name = name.getText().toString();
+                editableLocation.Location = location.getText().toString();
+                editableLocation.Description = description.getText().toString();
+                if(coords[0] != 0.0) {
+                    editableLocation.SetCoordinates(coords[0], coords[1]);
+                }
+                editableLocation.PlannedVisit = plannedDate;
+                editableLocation.DateVisited = visitedDate;
+                editableLocation.Notes = notes;
+                editableLocation.Price = Double.parseDouble(price.getText().toString());
+                if(imageOverwrite != null){
+                    SaveLoadImages loadImages = new SaveLoadImages();
+                    loadImages.DeleteImage(editableLocation.FileName);
+                    editableLocation.FileName = SaveImage(imageOverwrite);
                 }
 
                 SQLDatabase db = new SQLDatabase(c);
-                db.addLocation(newLocation);
+                db.UpdateLocation(editableLocation);
                 Intent intent = new Intent(getApplicationContext(),LocationsList.class);
                 startActivity(intent);
             }
@@ -300,8 +342,8 @@ public class AddLocation extends AppCompatActivity implements OnMapReadyCallback
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
-                image = (Bitmap) extras.get("data");
-                previewImage.setImageBitmap(image);
+                imageOverwrite = (Bitmap) extras.get("data");
+                previewImage.setImageBitmap(imageOverwrite);
             }
         } else if (requestCode == 3) {
             if (resultCode == RESULT_OK) {
@@ -314,15 +356,15 @@ public class AddLocation extends AppCompatActivity implements OnMapReadyCallback
                 String filePath = cursor.getString(columnIndex);
                 cursor.close();
 
-                image = BitmapFactory.decodeFile(filePath);
-                previewImage.setImageBitmap(image);
+                imageOverwrite = BitmapFactory.decodeFile(filePath);
+                previewImage.setImageBitmap(imageOverwrite);
             }
         }
     }
 
     public void GetDate(final boolean plannedVisit, final boolean dateVisited) {
-        AlertDialog.Builder setDateDialog = new AlertDialog.Builder(AddLocation.this);
-        final LayoutInflater li = LayoutInflater.from(AddLocation.this);
+        AlertDialog.Builder setDateDialog = new AlertDialog.Builder(EditLocation.this);
+        final LayoutInflater li = LayoutInflater.from(EditLocation.this);
 
         View datetimeview = li.inflate(R.layout.time_date_picker, null);
         setDateDialog.setView(datetimeview);
@@ -349,10 +391,9 @@ public class AddLocation extends AppCompatActivity implements OnMapReadyCallback
                         visitedDate = calendar.getTime();
                         String visitedDataString = sf.format(visitedDate);
 
-                        dateVisitLbl.setText("Date visited: " + visitedDataString);
+                        dateVisitedLbl.setText("Date visited: " + visitedDataString);
                     }
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
