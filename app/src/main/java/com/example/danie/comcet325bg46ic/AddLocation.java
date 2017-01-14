@@ -242,27 +242,34 @@ public class AddLocation extends AppCompatActivity implements OnMapReadyCallback
         addLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Location newLocation = new Location();
+                if(name.getText().toString().equals("") || location.getText().toString().equals("")){
+                    Toast.makeText(getApplicationContext(),"Location requires a name and locaiton value",Toast.LENGTH_LONG).show();
+                }else {
+                    Location newLocation = new Location();
 
-                newLocation.Deletable = true;
-                newLocation.Name = name.getText().toString();
-                newLocation.Location = location.getText().toString();
-                newLocation.Description = description.getText().toString();
-                newLocation.SetCoordinates(coords[0], coords[1]);
-                newLocation.PlannedVisit = plannedDate;
-                newLocation.DateVisited = visitedDate;
-                newLocation.Notes = notes;
-                newLocation.Price = Double.parseDouble(price.getText().toString());
-                newLocation.Favorite = favourite.isChecked();
-                newLocation.Rank = ranking.getNumStars();
-                if(image != null){
-                    newLocation.FileName = SaveImage(image);
+                    newLocation.Deletable = true;
+                    newLocation.Name = name.getText().toString();
+                    newLocation.Location = location.getText().toString();
+                    newLocation.Description = description.getText().toString();
+                    newLocation.SetCoordinates(coords[0], coords[1]);
+                    newLocation.PlannedVisit = plannedDate;
+                    newLocation.DateVisited = visitedDate;
+                    newLocation.Notes = notes;
+                    newLocation.Price = Double.parseDouble(price.getText().toString());
+                    newLocation.Favorite = favourite.isChecked();
+                    newLocation.Rank = ranking.getNumStars();
+                    newLocation.Deletable = true;
+                    newLocation.Editable = true;
+                    if (image != null) {
+                        newLocation.FileName = SaveImage(image);
+                    } else {
+                        newLocation.FileName = Integer.toString(R.drawable.default_icon);
+                    }
+                    SQLDatabase db = new SQLDatabase(c);
+                    db.addLocation(newLocation);
+                    Intent intent = new Intent(getApplicationContext(), LocationsList.class);
+                    startActivity(intent);
                 }
-
-                SQLDatabase db = new SQLDatabase(c);
-                db.addLocation(newLocation);
-                Intent intent = new Intent(getApplicationContext(),LocationsList.class);
-                startActivity(intent);
             }
         });
     }
